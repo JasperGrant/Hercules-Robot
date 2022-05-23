@@ -81,61 +81,6 @@ class SquareMove(object):
         self.vel_pub.publish(msg)
 
 
-
-
-class SquareMoveVel(SquareMove):
-    """
-    This class implements a open-loop square trajectory based on velocity control. HOWTO:
-     - Start the sensors on the turtlebot:
-            $ roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch 
-     - Start this node on your computer:
-            $ python eced3901_dt1.py vel
-    """
-
-    def __init__(self):
-        
-        super(SquareMoveVel, self).__init__()
-
-    def go_forward(self, duration, speed):
-
-        # Get the initial time
-        self.t_init = time.time()
-
-        # Set the velocity forward and wait (do it in a while loop to keep publishing the velocity)
-        while time.time() - self.t_init < duration and not ros.is_shutdown():
-
-            msg = Twist()
-            msg.linear.x = speed
-            msg.angular.z = 0
-            self.vel_ros_pub(msg)
-            time.sleep(self.pub_rate)
-
-    def turn(self, duration, ang_speed):
-
-         # Get the initial time
-        self.t_init = time.time()
-
-        # Set the velocity forward and wait 2 sec (do it in a while loop to keep publishing the velocity)
-        while time.time() - self.t_init < duration and not ros.is_shutdown():
-
-            msg = Twist()
-            msg.linear.x = 0
-            msg.angular.z = ang_speed
-            self.vel_ros_pub(msg)
-            time.sleep(self.pub_rate)
-
-    def move(self):
-
-        self.go_forward(2, 0.5)
-        self.turn(3.5, 0.5)
-        self.go_forward(2, 0.5)
-        self.turn(3.5, 0.5)
-        self.go_forward(2, 0.5)
-        self.turn(3.5, 0.5)
-        self.go_forward(2, 0.5)
-        self.stop_robot()
-
-
 class SquareMoveOdom(SquareMove):
     """
     This class implements a semi closed-loop square trajectory based on relative position control,
@@ -209,13 +154,13 @@ class SquareMoveOdom(SquareMove):
             time.sleep(0.1)
 
         # Implement main instructions
-        # self.move_of(0.5)
-        self.turn_of(math.pi/4)
         self.move_of(0.5)
-        self.turn_of(math.pi/4)
+        self.turn_of(math.pi/2)
+        self.move_of(1)
+        self.turn_of(math.pi/2)
         self.move_of(0.5)
-        self.turn_of(math.pi/4)
-        self.move_of(0.5)
+        self.turn_of(math.pi/2)
+        self.move_of(1)
         self.stop_robot()
 
 
@@ -224,19 +169,7 @@ class SquareMoveOdom(SquareMove):
 if __name__ == '__main__':
 
     # Choose the example you need to run in the command line
-    if len(sys.argv) > 1:
-
-        if sys.argv[1] == "vel":
-            r = SquareMoveVel()
-
-        elif sys.argv[1] == "odom":
-            r = SquareMoveOdom()
-
-        else:
-            sys.exit(-1)
-
-    else:
-        sys.exit(-1)
+    r = SquareMoveOdom()
 
     # Listen and Publish to ROS + execute moving instruction
     r.start_ros()
