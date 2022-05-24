@@ -129,39 +129,58 @@ class SquareMoveOdom(SquareMove):
 
         # Convert the orientation quaternion message to Euler angles
         a_init = self.get_z_rotation(self.odom_pose.orientation)
-        print a_init
+        
+	# Clockwise
+        if (ang_speed > 0):
 
-        # Set the angular velocity forward until angle is reached
-        while (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a and not ros.is_shutdown():
+            # Normal operation
+            if (a_init + a < math.pi):
+                # Set the angular velocity forward until angle is reached
+                while (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a and not ros.is_shutdown():
+                    sys.stdout.write("\r [TURN] The robot has turned of {:.2f}".format(self.get_z_rotation(self.odom_pose.orientation) - a_init) + "rad over {:.2f}".format(a) + "rad")
+                    sys.stdout.flush()
+                    print (self.get_z_rotation(self.odom_pose.orientation) - a_init)
 
-            # sys.stdout.write("\r [TURN] The robot has turned of {:.2f}".format(self.get_z_rotation(self.odom_pose.orientation) - \
-            #     a_init) + "rad over {:.2f}".format(a) + "rad")
-            # sys.stdout.flush()
-            # print (self.get_z_rotation(self.odom_pose.orientation) - a_init)
+                    msg = Twist()
+                    msg.angular.z = ang_speed
+                    msg.linear.x = 0
+                    self.vel_ros_pub(msg)
+                    time.sleep(self.pub_rate)
 
-            msg = Twist()
-            msg.angular.z = ang_speed
-            msg.linear.x = 0
-            self.vel_ros_pub(msg)
-            time.sleep(self.pub_rate)
+                    sys.stdout.write("\n")
 
-        sys.stdout.write("\n")
+		# Error-correction
+            else:
+        		# Set the angular velocity forward until angle is reached
+                while (self.get_z_rotation(self.odom_pose.orientation) > a_init-1 or (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a-2*math.pi) and not ros.is_shutdown():
+                    sys.stdout.write("\r [TURN] The robot has turned of {:.2f}".format(self.get_z_rotation(self.odom_pose.orientation) - a_init) + "rad over {:.2f}".format(a) + "rad")
+                    sys.stdout.flush()
+                    print (self.get_z_rotation(self.odom_pose.orientation) - a_init)
+
+                    msg = Twist()
+                    msg.angular.z = ang_speed
+                    msg.linear.x = 0
+                    self.vel_ros_pub(msg)
+                    time.sleep(self.pub_rate)
+
+                    sys.stdout.write("\n")
+
 
     def move(self):
 
-        # Wait that our python program has received its first messages
+   	# Wait that our python program has received its first messages
         while self.odom_pose is None and not ros.is_shutdown():
             time.sleep(0.1)
 
-        # Implement main instructions
-        self.move_of(0.5)
-        self.turn_of(math.pi/2)
-        self.move_of(1)
-        self.turn_of(math.pi/2)
-        self.move_of(0.5)
-        self.turn_of(math.pi/2)
-        self.move_of(1)
-        self.stop_robot()
+        	# Implement main instructions
+            self.move_of(0.5)
+            self.turn_of(math.pi/2)
+            self.move_of(1)
+            self.turn_of(math.pi/2)
+       	    self.move_of(0.5)
+            self.turn_of(math.pi/2)
+            self.move_of(1)
+            self.stop_robot()
 
 
 
