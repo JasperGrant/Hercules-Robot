@@ -7,6 +7,8 @@ from geometry_msgs.msg import Twist, Pose
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
+PI = math.pi
+OFFSET = 0.5
 
 __author__ = "Gabriel Urbain" 
 __copyright__ = "Copyright 2018, IDLab, UGent"
@@ -145,7 +147,7 @@ class SquareMoveOdom(SquareMove):
 		# Error-correction
             else:
         		# Set the angular velocity forward until angle is reached
-                while (self.get_z_rotation(self.odom_pose.orientation) > a_init-0.1 or (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a-2*math.pi) and not ros.is_shutdown():
+                while (self.get_z_rotation(self.odom_pose.orientation) > a_init-OFFSET or (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a-2*math.pi) and not ros.is_shutdown():
 			print("Case 2")
 			msg = Twist()
          		msg.angular.z = ang_speed
@@ -156,9 +158,9 @@ class SquareMoveOdom(SquareMove):
 	else:
 
             # Normal operation
-            if (a_init + a > math.pi):
+            if (a_init + a > -math.pi):
                 # Set the angular velocity forward until angle is reached
-                while (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a and not ros.is_shutdown():
+                while (self.get_z_rotation(self.odom_pose.orientation) - a_init) > a and not ros.is_shutdown():
 			print("Case 3")
 			msg = Twist()
          		msg.angular.z = -ang_speed
@@ -169,7 +171,7 @@ class SquareMoveOdom(SquareMove):
 		# Error-correction
             else:
         		# Set the angular velocity forward until angle is reached
-                while (self.get_z_rotation(self.odom_pose.orientation) < a_init+0.1 or (self.get_z_rotation(self.odom_pose.orientation) - a_init) > a-2*math.pi) and not ros.is_shutdown():
+                while (self.get_z_rotation(self.odom_pose.orientation) < a_init+OFFSET or (self.get_z_rotation(self.odom_pose.orientation) - a_init) > a+2*math.pi) and not ros.is_shutdown():
 			print("Case 4")
 			msg = Twist()
          		msg.angular.z = -ang_speed
@@ -187,11 +189,11 @@ class SquareMoveOdom(SquareMove):
 
             #Clockwise
             self.move_of(0.5)
-            self.turn_of(math.pi/2)
+            self.turn_of(PI/2)
             self.move_of(1)
-            self.turn_of(math.pi/2)
+            self.turn_of(PI/2)
        	    self.move_of(0.5)
-            self.turn_of(math.pi/2)
+            self.turn_of(PI/2)
             self.move_of(1)
 
             #Turn Around
@@ -199,11 +201,11 @@ class SquareMoveOdom(SquareMove):
 
             #Counter-Clockwise
             self.move_of(1)
-            self.turn_of(-math.pi/2)
+            self.turn_of(-PI/2)
             self.move_of(0.5)
-            self.turn_of(-math.pi/2)
+            self.turn_of(-PI/2)
             self.move_of(1)
-            self.turn_of(-math.pi/2)
+            self.turn_of(-PI/2)
             self.move_of(0.5)
 
             #End
