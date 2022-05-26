@@ -135,6 +135,7 @@ class SquareMoveOdom(SquareMove):
             if (a_init + a < math.pi):
                 # Set the angular velocity forward until angle is reached
                 while (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a and not ros.is_shutdown():
+			print("Case 1")
 			msg = Twist()
          		msg.angular.z = ang_speed
          		msg.linear.x = 0
@@ -145,6 +146,7 @@ class SquareMoveOdom(SquareMove):
             else:
         		# Set the angular velocity forward until angle is reached
                 while (self.get_z_rotation(self.odom_pose.orientation) > a_init-0.1 or (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a-2*math.pi) and not ros.is_shutdown():
+			print("Case 2")
 			msg = Twist()
          		msg.angular.z = ang_speed
          		msg.linear.x = 0
@@ -157,6 +159,7 @@ class SquareMoveOdom(SquareMove):
             if (a_init + a > math.pi):
                 # Set the angular velocity forward until angle is reached
                 while (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a and not ros.is_shutdown():
+			print("Case 3")
 			msg = Twist()
          		msg.angular.z = -ang_speed
          		msg.linear.x = 0
@@ -167,6 +170,7 @@ class SquareMoveOdom(SquareMove):
             else:
         		# Set the angular velocity forward until angle is reached
                 while (self.get_z_rotation(self.odom_pose.orientation) < a_init+0.1 or (self.get_z_rotation(self.odom_pose.orientation) - a_init) > a-2*math.pi) and not ros.is_shutdown():
+			print("Case 4")
 			msg = Twist()
          		msg.angular.z = -ang_speed
          		msg.linear.x = 0
@@ -191,7 +195,7 @@ class SquareMoveOdom(SquareMove):
             self.move_of(1)
 
             #Turn Around
-            self.turn_of(pi)
+            self.turn_of(math.pi)
 
             #Counter-Clockwise
             self.move_of(1)
@@ -209,6 +213,7 @@ class SquareMoveOdom(SquareMove):
 
 
 if __name__ == '__main__':
+    time.sleep(1)
 
     # Choose the example you need to run in the command line
     r = SquareMoveOdom()
