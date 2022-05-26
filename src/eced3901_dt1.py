@@ -10,6 +10,11 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 PI = math.pi
 OFFSET = 0.5
 
+#Calibration Coefficients
+DISTANCE_COEF = 0.885	#dist coeff
+CLOCK_COEF = 0.93
+COUNTER_COEF = 0.93
+
 __author__ = "Gabriel Urbain" 
 __copyright__ = "Copyright 2018, IDLab, UGent"
 
@@ -97,6 +102,8 @@ class SquareMoveOdom(SquareMove):
 
 
         super(SquareMoveOdom, self).__init__()
+	#self.odom_pose = pose()
+	#ros.wait_for_message("/odom", self.odom_pose)
 
         self.pub_rate = 0.1
 
@@ -106,8 +113,8 @@ class SquareMoveOdom(SquareMove):
         print roll, pitch, yaw
         return yaw
         
-    def move_of(self, d, speed=0.5):
-
+    def move_of(self, d, speed=0.2):
+	d = d * DISTANCE_COEF
         x_init = self.odom_pose.position.x
         y_init = self.odom_pose.position.y
 
@@ -125,14 +132,14 @@ class SquareMoveOdom(SquareMove):
             self.vel_ros_pub(msg)
             time.sleep(self.pub_rate)
 
-    def turn_of(self, a, ang_speed=0.4):
+    def turn_of(self, a, ang_speed=.2):
 
         # Convert the orientation quaternion message to Euler angles
         a_init = self.get_z_rotation(self.odom_pose.orientation)
 
 	# Clockwise
         if (a > 0):
-
+            a = a * CLOCK_COEF
             # Normal operation
             if (a_init + a < math.pi):
                 # Set the angular velocity forward until angle is reached
@@ -154,9 +161,10 @@ class SquareMoveOdom(SquareMove):
          		msg.linear.x = 0
          		self.vel_ros_pub(msg)
          		time.sleep(self.pub_rate)
-            
-	else:
 
+        # Counter-Clockwise   
+	else:
+            a = a * COUNTER_COEF
             # Normal operation
             if (a_init + a > -math.pi):
                 # Set the angular velocity forward until angle is reached
@@ -215,7 +223,6 @@ class SquareMoveOdom(SquareMove):
 
 
 if __name__ == '__main__':
-    time.sleep(1)
 
     # Choose the example you need to run in the command line
     r = SquareMoveOdom()
