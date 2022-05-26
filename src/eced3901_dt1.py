@@ -172,7 +172,7 @@ class SquareMoveOdom(SquareMove):
         while self.odom_pose is None and not ros.is_shutdown():
             time.sleep(0.1)
 
-        	# Implement main instructions
+            #Clockwise
             self.move_of(0.5)
             self.turn_of(math.pi/2)
             self.move_of(1)
@@ -180,6 +180,20 @@ class SquareMoveOdom(SquareMove):
        	    self.move_of(0.5)
             self.turn_of(math.pi/2)
             self.move_of(1)
+
+            #Turn Around
+            self.turn_of(pi)
+
+            #Counter-Clockwise
+            self.move_of(1)
+            self.turn_of(-math.pi/2)
+            self.move_of(0.5)
+            self.turn_of(-math.pi/2)
+            self.move_of(1)
+            self.turn_of(-math.pi/2)
+            self.move_of(0.5)
+
+            #End
             self.stop_robot()
 
 
