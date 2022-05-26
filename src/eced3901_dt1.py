@@ -123,48 +123,57 @@ class SquareMoveOdom(SquareMove):
             self.vel_ros_pub(msg)
             time.sleep(self.pub_rate)
 
-        sys.stdout.write("\n")
-
     def turn_of(self, a, ang_speed=0.4):
 
         # Convert the orientation quaternion message to Euler angles
         a_init = self.get_z_rotation(self.odom_pose.orientation)
-        
+
 	# Clockwise
-        if (ang_speed > 0):
+        if (a > 0):
 
             # Normal operation
             if (a_init + a < math.pi):
                 # Set the angular velocity forward until angle is reached
                 while (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a and not ros.is_shutdown():
-                    sys.stdout.write("\r [TURN] The robot has turned of {:.2f}".format(self.get_z_rotation(self.odom_pose.orientation) - a_init) + "rad over {:.2f}".format(a) + "rad")
-                    sys.stdout.flush()
-                    print (self.get_z_rotation(self.odom_pose.orientation) - a_init)
-
-                    msg = Twist()
-                    msg.angular.z = ang_speed
-                    msg.linear.x = 0
-                    self.vel_ros_pub(msg)
-                    time.sleep(self.pub_rate)
-
-                    sys.stdout.write("\n")
+			msg = Twist()
+         		msg.angular.z = ang_speed
+         		msg.linear.x = 0
+         		self.vel_ros_pub(msg)
+         		time.sleep(self.pub_rate)
 
 		# Error-correction
             else:
         		# Set the angular velocity forward until angle is reached
-                while (self.get_z_rotation(self.odom_pose.orientation) > a_init-1 or (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a-2*math.pi) and not ros.is_shutdown():
-                    sys.stdout.write("\r [TURN] The robot has turned of {:.2f}".format(self.get_z_rotation(self.odom_pose.orientation) - a_init) + "rad over {:.2f}".format(a) + "rad")
-                    sys.stdout.flush()
-                    print (self.get_z_rotation(self.odom_pose.orientation) - a_init)
+                while (self.get_z_rotation(self.odom_pose.orientation) > a_init-0.1 or (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a-2*math.pi) and not ros.is_shutdown():
+			msg = Twist()
+         		msg.angular.z = ang_speed
+         		msg.linear.x = 0
+         		self.vel_ros_pub(msg)
+         		time.sleep(self.pub_rate)
+            
+	else:
 
-                    msg = Twist()
-                    msg.angular.z = ang_speed
-                    msg.linear.x = 0
-                    self.vel_ros_pub(msg)
-                    time.sleep(self.pub_rate)
+            # Normal operation
+            if (a_init + a > math.pi):
+                # Set the angular velocity forward until angle is reached
+                while (self.get_z_rotation(self.odom_pose.orientation) - a_init) < a and not ros.is_shutdown():
+			msg = Twist()
+         		msg.angular.z = -ang_speed
+         		msg.linear.x = 0
+         		self.vel_ros_pub(msg)
+         		time.sleep(self.pub_rate)
 
-                    sys.stdout.write("\n")
-
+		# Error-correction
+            else:
+        		# Set the angular velocity forward until angle is reached
+                while (self.get_z_rotation(self.odom_pose.orientation) < a_init+0.1 or (self.get_z_rotation(self.odom_pose.orientation) - a_init) > a-2*math.pi) and not ros.is_shutdown():
+			msg = Twist()
+         		msg.angular.z = -ang_speed
+         		msg.linear.x = 0
+         		self.vel_ros_pub(msg)
+         		time.sleep(self.pub_rate)
+                   
+		
 
     def move(self):
 
