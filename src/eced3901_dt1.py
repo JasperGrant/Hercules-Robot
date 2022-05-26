@@ -195,6 +195,18 @@ class SquareMoveOdom(SquareMove):
         while self.odom_pose is None and not ros.is_shutdown():
             time.sleep(0.1)
 
+	    #Counter-Clockwise
+            self.move_of(1)
+            self.turn_of(-PI/2)
+            self.move_of(0.5)
+            self.turn_of(-PI/2)
+            self.move_of(1)
+            self.turn_of(-PI/2)
+            self.move_of(0.5)
+	
+	    #Turn Around
+            self.turn_of(math.pi)
+	
             #Clockwise
             self.move_of(0.5)
             self.turn_of(PI/2)
@@ -204,17 +216,8 @@ class SquareMoveOdom(SquareMove):
             self.turn_of(PI/2)
             self.move_of(1)
 
-            #Turn Around
-            self.turn_of(math.pi)
-
-            #Counter-Clockwise
-            self.move_of(1)
-            self.turn_of(-PI/2)
-            self.move_of(0.5)
-            self.turn_of(-PI/2)
-            self.move_of(1)
-            self.turn_of(-PI/2)
-            self.move_of(0.5)
+            
+            
 
             #End
             self.stop_robot()
@@ -223,10 +226,6 @@ class SquareMoveOdom(SquareMove):
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-=======
-    ros.wait_for_message("/odom", r.odom_pose())
->>>>>>> b771b59850430cfc6186ede2d4f4000f7c66fc72
 
     # Choose the example you need to run in the command line
     r = SquareMoveOdom()
