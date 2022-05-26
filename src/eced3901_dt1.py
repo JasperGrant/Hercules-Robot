@@ -215,7 +215,7 @@ class SquareMoveOdom(SquareMove):
 
 
 if __name__ == '__main__':
-    time.sleep(1)
+    ros.wait_for_message("/odom", r.odom_pose())
 
     # Choose the example you need to run in the command line
     r = SquareMoveOdom()
