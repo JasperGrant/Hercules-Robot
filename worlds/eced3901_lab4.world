@@ -11,8 +11,8 @@
     </include>
 
     <physics type="ode">
-      <real_time_update_rate>1000.0</real_time_update_rate>
-      <max_step_size>0.001</max_step_size>
+      <real_time_update_rate>500.0</real_time_update_rate>
+      <max_step_size>0.002</max_step_size>
       <real_time_factor>1</real_time_factor>
       <ode>
         <solver>
@@ -33,14 +33,14 @@
 
     <!-- Load model -->
     <include>
-      <uri>model://turtlebot3_square</uri>
+      <uri>model://eced3901_lab4</uri>
     </include>
 
     <model name='obstacle'>
       <pose frame=''>0 0 0 0 -0 0</pose>
       <link name='obstacle'>
         <collision name='obstacle_1'>
-          <pose>-0.6 -0.6 0.25 0 0 0</pose>
+          <pose>0.9 0.9 0.25 0 0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.15</radius>
@@ -60,7 +60,7 @@
         </collision>
 
         <visual name='obstacle_1'>
-          <pose>-0.6 -0.6 0.25 0 0 0</pose>
+          <pose>0.9 0.9 0.25 0 0 0</pose>
           <geometry>
             <cylinder>
               <radius>0.15</radius>
@@ -70,11 +70,11 @@
           <material>
             <script>
               <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/White</name>
+              <name>Gazebo/Red</name>
             </script>
           </material>
         </visual>
-
+<!--
         <collision name='obstacle_2'>
           <pose>-0.6 0.6 0.25 0 0 0</pose>
           <geometry>
@@ -181,7 +181,7 @@
               <name>Gazebo/White</name>
             </script>
           </material>
-        </visual>
+        </visual> -->
       </link>
       <static>1</static>
     </model>
@@ -194,7 +194,7 @@
 
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>0.0 0.0 17.0 0 1.5708 0</pose>
+        <pose>0.9 0.9 5.0 0 1.5708 1.5708</pose>
         <view_controller>orbit</view_controller>
       </camera>
     </gui>
