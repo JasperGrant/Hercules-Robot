@@ -11,8 +11,8 @@ PI = math.pi
 OFFSET = 0.5
 
 #Calibration Coefficients
-DISTANCE_COEF = 0.885	#dist coeff
-CLOCK_COEF = 0.93
+DISTANCE_COEF = 0.9	#dist coeff
+CLOCK_COEF = 0.945
 COUNTER_COEF = 0.93
 
 __author__ = "Gabriel Urbain" 
@@ -215,7 +215,7 @@ class SquareMoveOdom(SquareMove):
        	    self.move_of(0.5)
             self.turn_of(PI/2)
             self.move_of(1)
-
+            self.turn_of(PI)
             
             
 
