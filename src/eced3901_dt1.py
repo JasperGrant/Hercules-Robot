@@ -196,28 +196,13 @@ class SquareMoveOdom(SquareMove):
             time.sleep(0.1)
 
 	    #Counter-Clockwise
-            self.move_of(1)
-            self.turn_of(-PI/2)
-            self.move_of(0.5)
-            self.turn_of(-PI/2)
-            self.move_of(1)
-            self.turn_of(-PI/2)
-            self.move_of(0.5)
-	
-	    #Turn Around
-            self.turn_of(math.pi)
-	
-            #Clockwise
-            self.move_of(0.5)
+            self.move_of(1.1)
             self.turn_of(PI/2)
-            self.move_of(1)
+            self.move_of(1.1)
             self.turn_of(PI/2)
-       	    self.move_of(0.5)
+            self.move_of(1.1)
             self.turn_of(PI/2)
-            self.move_of(1)
-            self.turn_of(PI)
-            
-            
+            self.move_of(1.1)
 
             #End
             self.stop_robot()
