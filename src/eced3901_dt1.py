@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import math
 import rospy as ros
 import sys
@@ -110,7 +111,7 @@ class SquareMoveOdom(SquareMove):
     def get_z_rotation(self, orientation):
 
         (roll, pitch, yaw) = euler_from_quaternion([orientation.x, orientation.y, orientation.z, orientation.w])
-        print roll, pitch, yaw
+        #print roll, pitch, yaw
         return yaw
         
     def move_of(self, d, speed=0.2):
