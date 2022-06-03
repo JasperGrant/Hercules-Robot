@@ -5,11 +5,11 @@
   <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
   <arg name="configuration_basename" default="turtlebot3_lds_2d.lua"/>
   <arg name="open_rviz" default="true"/>
-  <arg name="x_pos" default="1.0"/>
-  <arg name="y_pos" default="1.0"/>
+  <arg name="x_pos" default="0.3"/>
+  <arg name="y_pos" default="0.3"/>
   <arg name="z_pos" default="0.0"/>
-  <arg name="map_file" default="$(find eced3901-2022-team01)/maps/dt2_map.yaml" />
-  <arg name="node_start_delay" default="1.0" />
+  <arg name="map_file" default="$(find eced3901-2022-team01)/maps/dt2_map" />
+  <arg name="node_start_delay" default="180.0" />
 
   <!-- TurtleBot3 -->
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
