@@ -8,7 +8,7 @@
   <arg name="x_pos" default="1.0"/>
   <arg name="y_pos" default="1.0"/>
   <arg name="z_pos" default="0.0"/>
-  <arg name="map_file" default="$(find eced3901-2022-team01)/map_dt2.yaml" />
+  <arg name="map_file" default="$(find eced3901-2022-team01)/maps/dt2_map.yaml" />
   <arg name="node_start_delay" default="1.0" />
 
   <!-- TurtleBot3 -->
@@ -33,7 +33,7 @@
 
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model turtlebot3_burger -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
 
-  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+  <node name="dt2" pkg="map_server" type="map_saver" args="-f $(arg map_file)" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
 
   <!-- rviz -->
   <group if="$(arg open_rviz)"> 
