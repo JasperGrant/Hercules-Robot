@@ -48,7 +48,7 @@ class SquareMove(object):
 
         # Variables containing the sensor information that can be used in the main program
         self.odom_pose = None
-
+	time.sleep(5)
     def start_ros(self):
 
         # Create a ROS node with a name for our program
@@ -103,8 +103,6 @@ class SquareMoveOdom(SquareMove):
 
 
         super(SquareMoveOdom, self).__init__()
-	#self.odom_pose = pose()
-	#ros.wait_for_message("/odom", self.odom_pose)
 
         self.pub_rate = 0.1
 
