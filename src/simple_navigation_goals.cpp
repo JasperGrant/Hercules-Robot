@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "simple_navigation_goals");
 
 	//tell the action client that we want to spin a thread by default
-	MoveBaseClient ac("move_base", true);
+	MoveBaseClient ac("odom", true);
 
 	//wait for the action server to come up
 	while(!ac.waitForServer(ros::Duration(5.0)))
