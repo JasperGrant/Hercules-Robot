@@ -2,6 +2,10 @@
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 
+#define PI 3.1415926
+#define DIST_CEOF 1
+#define ANG_COEF 1
+
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
 int main(int argc, char** argv)
@@ -19,13 +23,13 @@ int main(int argc, char** argv)
 
 	move_base_msgs::MoveBaseGoal goal;
 
-	while(1)
+	for(int i=0;i<4;i++)
 	{
 	//we'll send a goal to the robot to move 1 meter forward
 	goal.target_pose.header.frame_id = "base_link";
 	goal.target_pose.header.stamp = ros::Time::now();
-	goal.target_pose.pose.position.x = 1.0;
-	goal.target_pose.pose.orientation.z = 3.1415926/2;
+	goal.target_pose.pose.position.x = DIST_CEOF*1.1;
+	goal.target_pose.pose.orientation.z = (ANG_COEF*PI)/2;
 	goal.target_pose.pose.orientation.w = 1.0;
 	ROS_INFO("Sending goal");
 
