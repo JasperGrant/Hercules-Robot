@@ -3,8 +3,6 @@
 #include <actionlib/client/simple_action_client.h>
 
 #define PI 3.1415926
-#define DIST_CEOF 1
-#define ANG_COEF 1
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
@@ -23,13 +21,16 @@ int main(int argc, char** argv)
 	
 	move_base_msgs::MoveBaseGoal goal;
 
-	for(int i=0;i<1;i++)
-	{
+	//Move 1
+
 	//we'll send a goal to the robot to move 1 meter forward
-	goal.target_pose.header.frame_id = "base_link";
+	goal.target_pose.header.frame_id = "map";
 	goal.target_pose.header.stamp = ros::Time::now();
-	goal.target_pose.pose.position.x = DIST_CEOF*1.1;
-	goal.target_pose.pose.orientation.z = (ANG_COEF*PI)/2;
+
+	goal.target_pose.pose.position.x = 1.1;
+	goal.target_pose.pose.position.y = 0;
+	goal.target_pose.pose.orientation.z = PI/2;
+
 	goal.target_pose.pose.orientation.w = 1.0;
 	ROS_INFO("Sending goal");
 
@@ -40,7 +41,72 @@ int main(int argc, char** argv)
 		ROS_INFO("Hooray, the base moved 1 meter forward");
 	else
 		ROS_INFO("The base failed to move forward 1 meter for some reason");
-	}
+
+
+	//Move 2
+
+	//we'll send a goal to the robot to move 1 meter forward
+	goal.target_pose.header.frame_id = "map";
+	goal.target_pose.header.stamp = ros::Time::now();
+
+	goal.target_pose.pose.position.x = 1.1;
+	goal.target_pose.pose.position.y = 1.1;
+	goal.target_pose.pose.orientation.z = PI;
+
+	goal.target_pose.pose.orientation.w = 1.0;
+	ROS_INFO("Sending goal");
+
+	ac.sendGoal(goal);
+	ac.waitForResult();
+	
+	if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+		ROS_INFO("Hooray, the base moved 1 meter forward");
+	else
+		ROS_INFO("The base failed to move forward 1 meter for some reason");
+
+
+	//Move 3
+
+	//we'll send a goal to the robot to move 1 meter forward
+	goal.target_pose.header.frame_id = "map";
+	goal.target_pose.header.stamp = ros::Time::now();
+
+	goal.target_pose.pose.position.x = 0;
+	goal.target_pose.pose.position.y = 1.1;
+	goal.target_pose.pose.orientation.z = -PI/2;
+
+	goal.target_pose.pose.orientation.w = 1.0;
+	ROS_INFO("Sending goal");
+
+	ac.sendGoal(goal);
+	ac.waitForResult();
+	
+	if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+		ROS_INFO("Hooray, the base moved 1 meter forward");
+	else
+		ROS_INFO("The base failed to move forward 1 meter for some reason");
+
+
+	//Move 4
+
+	//we'll send a goal to the robot to move 1 meter forward
+	goal.target_pose.header.frame_id = "map";
+	goal.target_pose.header.stamp = ros::Time::now();
+
+	goal.target_pose.pose.position.x = 0;
+	goal.target_pose.pose.position.y = 0;
+	goal.target_pose.pose.orientation.z = 0;
+
+	goal.target_pose.pose.orientation.w = 1.0;
+	ROS_INFO("Sending goal");
+
+	ac.sendGoal(goal);
+	ac.waitForResult();
+	
+	if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+		ROS_INFO("Hooray, the base moved 1 meter forward");
+	else
+		ROS_INFO("The base failed to move forward 1 meter for some reason");
 
 	return 0;
 }
