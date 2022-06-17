@@ -6,7 +6,7 @@
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
-void gohere(int x, int y, int z, MoveBaseClient &ac)
+void gohere(double x, double y, double z, MoveBaseClient &ac)
 {
 	move_base_msgs::MoveBaseGoal goal;
 	goal.target_pose.header.frame_id = "map";
@@ -14,7 +14,7 @@ void gohere(int x, int y, int z, MoveBaseClient &ac)
 
 	goal.target_pose.pose.position.x = x;
 	goal.target_pose.pose.position.y = y;
-	goal.target_pose.pose.orientation.z = z;
+	//goal.target_pose.pose.orientation.z = z;
 
 	goal.target_pose.pose.orientation.w = 1.0;
 	ROS_INFO("Sending goal");
@@ -41,11 +41,10 @@ int main(int argc, char** argv)
 	{
 		ROS_INFO("Waiting for the move_base action server to come up");
 	}
-	
-	gohere(1.1,0,PI/2, ac);
-	gohere(1.1,1.1,PI, ac);
-	gohere(0,1.1,-PI/2, ac);
-	gohere(0,0,0, ac);
+	gohere(1.4,0.3,PI/2, ac);
+	gohere(1.4,1.4,PI, ac);
+	gohere(0.3,1.4,-PI/2, ac);
+	gohere(0.3,0.3,0, ac);
 
 	return 0;
 }

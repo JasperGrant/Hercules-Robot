@@ -5,8 +5,8 @@
   <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
   <arg name="configuration_basename" default="turtlebot3_lds_2d.lua"/>
   <arg name="open_rviz" default="true"/>
-  <arg name="x_pos" default="0.3"/>
-  <arg name="y_pos" default="0.3"/>
+  <arg name="x_pos" default="0.0"/>
+  <arg name="y_pos" default="0.0"/>
   <arg name="z_pos" default="0.0"/>
   <arg name="map_file" default="$(find eced3901-2022-team01)/maps/dt2_map" />
   <arg name="node_start_delay" default="180.0" />
@@ -21,7 +21,7 @@
     <arg name="model" value="$(arg model)"/>
     <arg name="configuration_basename" value="$(arg configuration_basename)"/>
   </include>
-<!--
+
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find eced3901-2022-team01)/worlds/eced3901_lab4.world"/>
     <arg name="paused" value="false"/>
@@ -30,7 +30,7 @@
     <arg name="headless" value="false"/>
     <arg name="debug" value="false"/>
   </include>  
--->
+
   <param name="robot_description" command="$(find xacro)/xacro.py $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
 
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model turtlebot3_burger -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
@@ -38,13 +38,18 @@
   <node name="dt2" pkg="map_server" type="map_saver" args="-f $(arg map_file)" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
 
   <!-- rviz -->
+<!--
   <group if="$(arg open_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
           args="-d $(find turtlebot3_slam)/rviz/turtlebot3_$(arg slam_methods).rviz"/>
   </group>
-
+-->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find eced3901-2022-team01)/rviz/eced3901_navigation.rviz"/>
+  </group>
   <group>
-  <node name="square_movement" pkg="eced3901-2022-team01" type="eced3901_dt1.py"/>
+  <!--node name="square_movement" pkg="eced3901-2022-team01" type="eced3901_dt1.py"/-->
   </group>
 </launch>
 
