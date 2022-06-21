@@ -68,6 +68,8 @@
 <hole x="30.48" y="36.83" drill="2"/>
 <hole x="3.81" y="36.83" drill="2"/>
 <text x="25.4" y="45.72" size="1.778" layer="25">BATTERY</text>
+<text x="26.67" y="40.64" size="1.016" layer="25">ATTICUS
+CTRL BRD</text>
 </plain>
 <libraries>
 <library name="uln-udn" urn="urn:adsk.eagle:library:407">
@@ -763,6 +765,10 @@ design rules under a new name.</description>
 </board>
 </drawing>
 <compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
 <note version="8.2" severity="warning">
 Since Version 8.2, EAGLE supports online libraries. The ids
 of those online libraries will not be understood (or retained)

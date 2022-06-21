@@ -66,8 +66,13 @@
 <wire x1="-1.27" y1="80" x2="-1.27" y2="30.48" width="0" layer="20"/>
 <hole x="1.27" y="77.47" drill="2"/>
 <hole x="1.27" y="34.29" drill="2"/>
-<text x="58.42" y="34.29" size="1.778" layer="25" rot="R180">BATTERY</text>
-<text x="38.1" y="30.48" size="1.778" layer="25">JUMPER</text>
+<text x="55.88" y="33.02" size="1.016" layer="25" rot="R180">BATTERY</text>
+<text x="40.64" y="30.48" size="1.016" layer="25">JUMPER</text>
+<text x="5.08" y="33.02" size="1.016" layer="25">ATTICUS
+SENSOR BOARD</text>
+<hole x="43.18" y="72.39" drill="2"/>
+<hole x="43.18" y="41.91" drill="2"/>
+<hole x="43.18" y="57.15" drill="2"/>
 </plain>
 <libraries>
 <library name="con-JST XH" urn="urn:adsk.eagle:library:29976298">
@@ -736,7 +741,6 @@ design rules under a new name.</description>
 <vertex x="43.18" y="34.29"/>
 <vertex x="43.18" y="33.02"/>
 <vertex x="44.45" y="31.75"/>
-<vertex x="45.72" y="31.75"/>
 <vertex x="57.15" y="31.75"/>
 <vertex x="58.42" y="33.02"/>
 <vertex x="58.42" y="77.47"/>
@@ -744,7 +748,6 @@ design rules under a new name.</description>
 <vertex x="54.61" y="78.74"/>
 <vertex x="53.34" y="77.47"/>
 <vertex x="53.34" y="34.29"/>
-<vertex x="49.53" y="34.29"/>
 <vertex x="45.72" y="34.29"/>
 <vertex x="44.45" y="35.56"/>
 </polygon>
@@ -814,6 +817,10 @@ design rules under a new name.</description>
 </board>
 </drawing>
 <compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
 <note version="8.2" severity="warning">
 Since Version 8.2, EAGLE supports online libraries. The ids
 of those online libraries will not be understood (or retained)

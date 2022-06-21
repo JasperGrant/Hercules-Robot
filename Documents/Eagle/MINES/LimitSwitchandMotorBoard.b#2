@@ -67,9 +67,9 @@
 <hole x="3.81" y="76.2" drill="2"/>
 <hole x="30.48" y="36.83" drill="2"/>
 <hole x="3.81" y="36.83" drill="2"/>
-<text x="25.4" y="45.72" size="1.778" layer="25">BATTERY</text>
-<text x="26.67" y="40.64" size="1.016" layer="25">ATTICUS
-CTRL BRD</text>
+<text x="27.94" y="45.72" size="0.8128" layer="25">BATTERY</text>
+<text x="34.29" y="43.18" size="1.016" layer="25" rot="R180">ATTICUS
+ARM BOARD</text>
 </plain>
 <libraries>
 <library name="uln-udn" urn="urn:adsk.eagle:library:407">
