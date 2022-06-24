@@ -13,8 +13,8 @@
 
 // defines variables
 long duration; // variable for the duration of sound wave travel
-int dClose; // variable for the distance measurement
-int dFar; // variable for the distance measurement
+double dClose; // variable for the distance measurement
+double dFar; // variable for the distance measurement
 
 
 void setup() {
@@ -38,7 +38,7 @@ void loop() {
   // Reads the echoPin, returns the sound wave travel time in microseconds
   duration = pulseIn(eClose, HIGH, 10000);
   // Calculating the distance
-  dClose = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  dClose = duration * 0.034 / 2 / 2.54; // Speed of sound wave divided by 2 (go and back)
   // Displays the distance on the Serial Monitor
 
   // Clears the trigPin condition
@@ -51,7 +51,7 @@ void loop() {
   // Reads the echoPin, returns the sound wave travel time in microseconds
   duration = pulseIn(eFar, HIGH, 10000);
   // Calculating the distance
-  dFar = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  dFar = duration * 0.034 / 2 /2.54; // Speed of sound wave divided by 2 (go and back)
   // Displays the distance on the Serial Monitor
 
 
@@ -62,8 +62,12 @@ void loop() {
     
   Serial.print("Distance: ");
   Serial.print(dClose);
-  Serial.print(" cm ");
+  Serial.print(" in ");
   Serial.print("Distance: ");
   Serial.print(dFar);
-  Serial.println(" cm");
+  Serial.println(" in");
+
+  delay(1000);
 }
+
+getDist(int 
