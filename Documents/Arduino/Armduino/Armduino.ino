@@ -1,40 +1,97 @@
-/*
- * MotorKnob
- *
- * A stepper motor follows the turns of a potentiometer
- * (or other sensor) on analog input 0.
- *
- * http://www.arduino.cc/en/Reference/Stepper
- * This example code is in the public domain.
- */
+//ROS Libraries
+#include <ros.h>
+#include <std_msgs/UInt8.h>
 
-#include <Stepper.h>
+//PINOUT
+#define L1 1
+#define L2 2
+#define L3 3
 
-// change this to the number of steps on your motor
-#define STEPS 220
+#define ARMS 4
+#define LED 5
 
-#define L1 3
-#define L2 4
+//Variables
+bool holdingMine = false;
 
-// create an instance of the stepper class, specifying
-// the number of steps of the motor and the pins it's
-// attached to
-Stepper stepper(STEPS, 9, 11, 10, 12);
+//Functions
+bool mineDetected();
+void dropMine();
+void grabMine();
 
-void setup() 
+//ROS NODE
+ros::NodeHandle nh;
+
+//PUBLISHER
+std_msgs::UInt8 int_msg;
+ros::Publisher detector("detector", &int_msg);
+
+//SUSCRIBER
+ros::Subscriber<std_msgs::UInt8> dropper("dropper", dropMine);
+
+void setup()
 {
-  pinMode(L1,INPUT_PULLUP);
-  pinMode(L2,INPUT_PULLUP);
+  //Node Setup
+  nh.initNode();
+  nh.advertise(detector);
+  nh.suscribe(dropper);
+  int_msg = 1;
 
-  
-  // set the speed of the motor to 30 RPMs
-  stepper.setSpeed(100);
+  //LED Setup
+  tone(LED,4000);
 }
 
-void loop() 
+void loop ()
+{  
+  //Grabs mine if detected
+  if (!holdingMine)
+  {
+    if (mineDetected())
+    {
+      holdingMine = grabMine();
+    }
+  }
+
+  //END LOOP
+  nh.spinOnce();
+  delay(1000);
+}
+
+void dropMine()
 {
-  if(digitalRead(L1) == LOW)
-    stepper.step(1);
-  if(digitalRead(L2) == LOW)
-    stepper.step(-1);
+  digitalWrite(ARMS, LOW);
+  delay(5000);
+  holdingMine = false;
+  return;
+}
+
+void grabMine()
+{
+  digitalWrite(ARMS, HIGH);
+  detector.publish(&int_msg);
+  holdingMine = true;
+  return;
+}
+
+//Returns true if a mine is detected
+//Returns false if a mine is not detected
+bool mineDetected()
+{
+  bool detected = false;
+
+  if (digitalRead(L1)==LOW)
+  {
+    detected = true;
+  }
+
+  if (digitalRead(L2)==LOW)
+  {
+    detected = true;
+  }
+
+  if (digitalRead(L3)==LOW)
+  {
+    detected = true;
+  }
+
+  return detected;
 }
