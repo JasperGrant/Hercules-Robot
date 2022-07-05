@@ -1,80 +1,75 @@
+//Newcode
+//Andrew Doucet
+//Runs motors and stuff
+
 //ROS Libraries
 #include <ros.h>
-#include <std_msgs/UInt8.h>
+#include <std_msgs/Empty.h>
 
-//PINOUT
-#define L1 1
-#define L2 2
-#define L3 3
+//Pinout
+#define L1 2
+#define L2 3
+#define L3 4
+#define ARMS 5
+#define EMIT 6
+#define LED 13
 
-#define ARMS 4
-#define LED 5
+#define DROP_DELAY 5000
 
 //Variables
-bool holdingMine = false;
+bool holding = false;
 
 //Functions
-bool mineDetected();
-void dropMine();
-void grabMine();
+bool detected();
+void grab();
+void drop(const std_msgs::Empty&);
 
-//ROS NODE
+//ROS Nodes
 ros::NodeHandle nh;
-
-//PUBLISHER
-std_msgs::UInt8 int_msg;
-ros::Publisher detector("detector", &int_msg);
-
-//SUSCRIBER
-ros::Subscriber<std_msgs::UInt8> dropper("dropper", dropMine);
+std_msgs::Empty msg;
+ros::Publisher pub("grabber", &msg);
+ros::Subscriber<std_msgs::Empty> sub("dropper", &drop );
 
 void setup()
 {
-  //Node Setup
-  nh.initNode();
-  nh.advertise(detector);
-  nh.suscribe(dropper);
-  int_msg = 1;
+  //Limit Switches
+  pinMode(L1, INPUT_PULLUP);
+  pinMode(L2, INPUT_PULLUP);
+  pinMode(L3, INPUT_PULLUP);
 
-  //LED Setup
-  tone(LED,4000);
+  //Output Pins
+  pinMode(ARMS, OUTPUT);
+  pinMode(EMIT, OUTPUT);
+  pinMode(LED, OUTPUT);
+
+  //Node Initialization
+  nh.initNode();
+  nh.advertise(pub);
+  nh.subscribe(sub);
+  
+  //EMITTER
+  tone(EMIT,4000);
 }
 
-void loop ()
-{  
+void loop()
+{
   //Grabs mine if detected
-  if (!holdingMine)
+  if (!holding)
   {
-    if (mineDetected())
+    if (detected())
     {
-      holdingMine = grabMine();
+      grab();
     }
   }
 
   //END LOOP
   nh.spinOnce();
-  delay(1000);
-}
-
-void dropMine()
-{
-  digitalWrite(ARMS, LOW);
-  delay(5000);
-  holdingMine = false;
-  return;
-}
-
-void grabMine()
-{
-  digitalWrite(ARMS, HIGH);
-  detector.publish(&int_msg);
-  holdingMine = true;
-  return;
+  delay(100);
 }
 
 //Returns true if a mine is detected
 //Returns false if a mine is not detected
-bool mineDetected()
+bool detected()
 {
   bool detected = false;
 
@@ -94,4 +89,24 @@ bool mineDetected()
   }
 
   return detected;
+}
+
+//Grabs Mine
+void grab()
+{
+  digitalWrite(ARMS, HIGH);
+  digitalWrite(LED, HIGH);
+  pub.publish(&msg);
+  holding = true;
+  return;
+}
+
+//Drop Mine
+void drop(const std_msgs::Empty& toggle_msg)
+{
+  digitalWrite(ARMS, LOW);
+  digitalWrite(LED, LOW);
+  delay(DROP_DELAY);
+  holding = false;
+  return;  
 }
