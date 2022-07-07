@@ -42,7 +42,13 @@ char mine_map[7][7] = {'k', 'u', 'u', 'u', 'u', 'u', 'u',
 struct coordinate{
     int x;
     int y;
+    struct coordinate *next;
 } typedef COORD;
+
+struct mempool{
+    struct coordinate *head;
+    struct coordinate *tail;
+} typedef MEMPOOL;
 
 COORD *new_coordinate(void){
     //Allocate memory
@@ -52,6 +58,17 @@ COORD *new_coordinate(void){
     new_coord->y = 0;
     //Return new zeroed coordinate
     return new_coord;
+}
+
+MEMPOOL *new_mempool(void){
+    //Allocate memory
+    MEMPOOL *new_mempool = (MEMPOOL *) calloc(1, sizeof(MEMPOOL));
+    //Make NULL pointers
+    new_mempool->head = NULL;
+    new_mempool->tail = NULL;
+    //Return NULLed linked list
+    return new_mempool;
+
 }
 
 
@@ -100,32 +117,21 @@ int main(int argc, char** argv)
     int mine_count = 0;
     //Main loop
     for(;;){
-        //Find closest mine
-        COORD *closest_coord = closest(current, 'M');
-        //If no mines found
-        if(closest_coord == NULL){
-            closest_coord = closest(current, 'u');
-
-            if(closest_coord == NULL){
-
-            }
-
-        };
-
-        gohere(closest_mine(current),ac);
-        //If no mine is found
-            //go to closest unexplored squares
-        //Move towards mine
-        //If mine is within proper distance
-            //Pick up mine
-            //Bring to end
-            //Drop off mine
-            //mine count ++
+        //Get location and do instructions from forward squares
+        //If callback is activated:
+            //Switch to backward squares
+            //Return mine
+        //If in ending square
+            //Switch to forward aquares
     }
 
     //subscriber with callback: mine is in proper distance
 
 	return 0;
 }
+
+/*mine_cb(empty msg){
+ *  switch to backwards grid
+ * }
 
 
