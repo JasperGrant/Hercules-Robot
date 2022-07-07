@@ -6,6 +6,8 @@
 
 #define PI 3.1415926
 
+#define MAXLEN 6
+
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
 void gohere(COORD * coord, MoveBaseClient &ac)
@@ -30,13 +32,24 @@ void gohere(COORD * coord, MoveBaseClient &ac)
 }
 //Define map structure
 //Note: mine map is flipped to the right from what you would expect.
-char mine_map[7][7] = {'k', 'u', 'u', 'u', 'u', 'u', 'u',
-                       'u', 'u', 'u', 'M', 'u', 'u', 'u',
-                       'u', 'u', 'u', 'u', 'u', 'u', 'u',
-                       'u', 'u', 'u', 'u', 'u', 'M', 'u',
-                       'u', 'u', 'u', 'u', 'u', 'u', 'u',
-                       'u', 'u', 'u', 'M', 'u', 'u', 'u',
-                       'E', 'u', 'u', 'u', 'u', 'u', 'u',
+char forwards_map[7][7][MAXLEN] = {" ", " ", " ", " ", " ", " ", " ",
+                               " ", " ", " ", " ", " ", " ", " ",
+                               " ", " ", " ", " ", " ", " ", " ",
+                               " ", " ", " ", " ", " ", " ", " ",
+                               " ", " ", " ", " ", " ", " ", " ",
+                               " ", " ", " ", " ", " ", " ", " ",
+                               " ", " ", " ", " ", " ", " ", " ",
+
+};
+
+char backwards_map[7][7][MAXLEN] = {" ", " ", " ", " ", " ", " ", " ",
+                                  " ", " ", " ", " ", " ", " ", " ",
+                                  " ", " ", " ", " ", " ", " ", " ",
+                                  " ", " ", " ", " ", " ", " ", " ",
+                                  " ", " ", " ", " ", " ", " ", " ",
+                                  " ", " ", " ", " ", " ", " ", " ",
+                                  " ", " ", " ", " ", " ", " ", " ",
+
 };
 
 struct coordinate{
@@ -117,6 +130,7 @@ int main(int argc, char** argv)
     int mine_count = 0;
     //Main loop
     for(;;){
+        for(int i = 0; ;)
         //Get location and do instructions from forward squares
         //If callback is activated:
             //Switch to backward squares
