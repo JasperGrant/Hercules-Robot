@@ -19,18 +19,19 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 //Sets a waypoint at coordinates x & y
 void gohere(int x, int y, MoveBaseClient &ac)
 {
+	//TODO: Conversion to map coordinates
 	move_base_msgs::MoveBaseGoal goal;
 	goal.target_pose.header.frame_id = "map";
 	goal.target_pose.header.stamp = ros::Time::now();
 
-	goal.target_pose.pose.position.x = x;
-	goal.target_pose.pose.position.y = y;
+	goal.target_pose.pose.position.x = (float)x*0.3048*2+0.3048;
+	goal.target_pose.pose.position.y = (float)y*0.3048*2+0.3048;
 
 	goal.target_pose.pose.orientation.w = 1.0;
 	ROS_INFO("Sending goal");
 
 	ac.sendGoal(goal);
-    	//TODO: Find out way to make sure we are not skipping the new instruction inside this loop
+   
 	ac.waitForResult();
 	
 	if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
@@ -71,10 +72,8 @@ enum map_choice{
 //Enum to be swapped out to specify different maps
 enum map_choice maps = forwards;
 
-//TODO: Subsciber for position
-//TODO: Subscriber for limit switches
-
 void amcl_callback(geometry_msgs::Pose msg){
+//TODO: Conversion
     //global variable = msg.data
 }
 
@@ -130,11 +129,13 @@ int main(int argc, char** argv)
     //Enum to be swapped out to specify different maps
     enum map_choice maps = forwards;
 
-    //Local integers to represents x and y coordinates
-    int x = 0, y = 0;
-
     //Main loop
     for(;;){
+
+	//Local integers to represents x and y coordinates
+    	int x = global_x, y = global_y;
+	//Set local goal variables
+	int goal_x = x, goal_y = y;
         //Loop to go through string
         for(int i = 0; map[maps][x][y][i] != '\0';i++)
 	{
@@ -143,19 +144,19 @@ int main(int argc, char** argv)
 
                 case 'E':
                     //Move position one east
-                    x++;
+                    goal_x++;
                     break;
                 case 'W':
                     //Move position one west
-                    x--;
+                    goal_x--;
                     break;
                 case 'N':
                     //Move position one north
-                    y++;
+                    goal_y++;
                     break;
                 case 'S':
                     //Move position one south
-                    y--;
+                    goal_y--;
                     break;
                 case 'R':
                     //Change map to return map
@@ -167,7 +168,7 @@ int main(int argc, char** argv)
 
             	}
             //Go to decided on location
-            gohere(x, y , ac);
+            gohere(goal_x, goal_y , ac);
             ros::spin();
         }
 
