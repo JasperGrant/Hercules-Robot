@@ -14,6 +14,7 @@
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
+//Sets a waypoint at coordinates x & y
 void gohere(int x, int y, MoveBaseClient &ac)
 {
 	move_base_msgs::MoveBaseGoal goal;
@@ -27,7 +28,7 @@ void gohere(int x, int y, MoveBaseClient &ac)
 	ROS_INFO("Sending goal");
 
 	ac.sendGoal(goal);
-    //TODO: Find out way to make sure we are not skipping the new instruction inside this loop
+    	//TODO: Find out way to make sure we are not skipping the new instruction inside this loop
 	ac.waitForResult();
 	
 	if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
@@ -35,29 +36,31 @@ void gohere(int x, int y, MoveBaseClient &ac)
 	else
 		ROS_INFO("The base failed to move forward 1 meter for some reason");
 }
+
+
 //Define map structure
-//Note: mine map is flipped to the right from what you would expect.
-char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {" ", " ", " ", " ", " ", " ", " ",
-                               " ", " ", " ", " ", " ", " ", " ",
-                               " ", " ", " ", " ", " ", " ", " ",
-                               " ", " ", " ", " ", " ", " ", " ",
-                               " ", " ", " ", " ", " ", " ", " ",
-                               " ", " ", " ", " ", " ", " ", " ",
-                               " ", " ", " ", " ", " ", " ", " ",
-                                      " ", " ", " ", " ", " ", " ", " ",
-                                      " ", " ", " ", " ", " ", " ", " ",
-                                      " ", " ", " ", " ", " ", " ", " ",
-                                      " ", " ", " ", " ", " ", " ", " ",
-                                      " ", " ", " ", " ", " ", " ", " ",
-                                      " ", " ", " ", " ", " ", " ", " ",
-                                      " ", " ", " ", " ", " ", " ", " ",
-                             " ", " ", " ", " ", " ", " ", " ",
-                             " ", " ", " ", " ", " ", " ", " ",
-                             " ", " ", " ", " ", " ", " ", " ",
-                             " ", " ", " ", " ", " ", " ", " ",
-                             " ", " ", " ", " ", " ", " ", " ",
-                             " ", " ", " ", " ", " ", " ", " ",
-                             " ", " ", " ", " ", " ", " ", " ",
+//Note: mine map is flipped 90 degrees clockwise from what you would expect.
+char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {"N", "E", "E", "S", "S", "EEE", "S",
+                               " ", "E", "N", "SE", "W", "N", "W",
+                               " ", "E", "N", "EEENN", "W", "W", "S",
+                               " ", "N", "E", "E", "W", "S", "W",
+                               " ", " ", " ", "E", "W", "S", "W",
+                               " ", " ", " ", "SSE", "N", "N", "W",
+                               " ", "N", "N", "N", "W", "N", " ",
+                                      "E", "S", "N", "N", "E", "E", "E",
+                                      "E", "S", "W", "N", "E", "E", "S",
+                                      "E", "S", "E", "E", "E", "N", "E",
+                                      "E", "E", "E", "S", "E", "N", "E",
+                                      "N", "N", "E", "S", "E", "E", "E",
+                                      "E", "S", "S", "S", "E", "S", "S",
+                                      "R", "S", "S", "S", "S", "S", "S",
+                             " ", "WNNWSSWWWN", "NNNNWWWWWWSSE", "NNNNWWWWWWSS", "NNNNWWWWWWS", "NNNNWNNWWS", "NNNNWNNWWWSWW",
+                             " ", "WNNWSSWWN", "NNNNWWWWWS", "WNNWWW", "NNNNWWWWWW", "NNNNWNNWWWSWN", "NNNNWNNWWWSWNW",
+                             " ", "WNNWSW", "WNNWWNW", "NNNNN", "NNNNWWWWW", "NNNNWNNWWWSW", "NNNNWNNWWWS",
+                             " ", "WNNWW", "WNNWWN", "WNNWN", "NNNNWWWW", "NNNNWNW", "NNNNWNNWWW",
+                             " ", " ", " ", "WNNN", "NNNNWWW", "NNNNWW", "NNNNWNNWW",
+                             " ", " ", " ", "N", "NNNNWN", "NNNNWNN", "NNNNWNNW",
+                             " ", " ", "NN", "NNN", "NNNN", "NNNNW", "NNNNNN",
 
 };
 
@@ -70,6 +73,7 @@ enum map_choice{
 
 int main(int argc, char** argv)
 {
+	//Initializes the moving client
 	ros::init(argc, argv, "simple_navigation_goals");
 
 	//tell the action client that we want to spin a thread by default
@@ -81,16 +85,21 @@ int main(int argc, char** argv)
 		ROS_INFO("Waiting for the move_base action server to come up");
 	}
 
+
     //Integers to represents x and y coordinates
     int x = 0, y = 0;
+
     //Enum to be swapped out to specify different maps
     enum map_choice maps = forwards;
+
     //Main loop
     for(;;){
         //Loop to go through string
-        for(int i = 0; map[maps][x][y][i] != '\0';i++){
+        for(int i = 0; map[maps][x][y][i] != '\0';i++)
+	{
             //Switch to convert cardinal direction in string into coordinate change
-            switch(){
+            switch()
+		{
                 case 'E':
                     //Move position one east
                     x++;
@@ -116,7 +125,7 @@ int main(int argc, char** argv)
                     ROS_INFO("Unrecognized character in instruction string\n")
                     break;
 
-            }
+            	}
             //Go to decided on location
             gohere(x, y , ac);
         }
