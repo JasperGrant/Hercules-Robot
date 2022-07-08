@@ -10,7 +10,7 @@
 #define PI 3.1415926
 
 
-#define MAXSTRINGLEN 6
+#define MAXSTRINGLEN 20
 #define MAPSIZE 7
 #define NUMBEROFMAPS 3
 
