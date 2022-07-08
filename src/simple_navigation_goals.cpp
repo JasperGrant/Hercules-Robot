@@ -37,46 +37,85 @@ void gohere(int x, int y, MoveBaseClient &ac)
 		ROS_INFO("The base failed to move forward 1 meter for some reason");
 }
 
-
 //Define map structure
 //Note: mine map is flipped 90 degrees clockwise from what you would expect.
-char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {"N", "E", "E", "S", "S", "EEE", "S",
-                               " ", "E", "N", "SE", "W", "N", "W",
-                               " ", "E", "N", "EEENN", "W", "W", "S",
-                               " ", "N", "E", "E", "W", "S", "W",
-                               " ", " ", " ", "E", "W", "S", "W",
-                               " ", " ", " ", "SSE", "N", "N", "W",
-                               " ", "N", "N", "N", "W", "N", " ",
-                                      "E", "S", "N", "N", "E", "E", "E",
-                                      "E", "S", "W", "N", "E", "E", "S",
-                                      "E", "S", "E", "E", "E", "N", "E",
-                                      "E", "E", "E", "S", "E", "N", "E",
-                                      "N", "N", "E", "S", "E", "E", "E",
-                                      "E", "S", "S", "S", "E", "S", "S",
+char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
+				"E", "EEN", "E", "S", "S", "EEE", "S",
+                               	"E", "W", "N", "EEE", "W", "N", "W",
+                               	"E", "W", "S", "S", "W", "W", "S",
+                               	"N", "N", "E", "W", "W", "S", "W",
+                               	"N", "N", "E", "W", "W", "S", "W",
+                               	"E", "S", "S", "NE", "N", "N", "W",
+                               	"", "N", "N", "W", "W", "N", "",
+                                      "E", "E", "N", "N", "E", "E", "E",
+                                      "E", "E", "W", "N", "E", "E", "S",
+                                      "E", "E", "E", "E", "E", "N", "E",
+                                      "E", "E", "E", "E", "E", "E", "E",
+                                      "N", "N", "E", "E", "E", "S", "E",
+                                      "E", "S", "S", "E", "E", "S", "S",
                                       "R", "S", "S", "S", "S", "S", "S",
-                             " ", "WNNWSSWWWN", "NNNNWWWWWWSSE", "NNNNWWWWWWSS", "NNNNWWWWWWS", "NNNNWNNWWS", "NNNNWNNWWWSWW",
-                             " ", "WNNWSSWWN", "NNNNWWWWWS", "WNNWWW", "NNNNWWWWWW", "NNNNWNNWWWSWN", "NNNNWNNWWWSWNW",
-                             " ", "WNNWSW", "WNNWWNW", "NNNNN", "NNNNWWWWW", "NNNNWNNWWWSW", "NNNNWNNWWWS",
-                             " ", "WNNWW", "WNNWWN", "WNNWN", "NNNNWWWW", "NNNNWNW", "NNNNWNNWWW",
-                             " ", " ", " ", "WNNN", "NNNNWWW", "NNNNWW", "NNNNWNNWW",
-                             " ", " ", " ", "N", "NNNNWN", "NNNNWNN", "NNNNWNNW",
-                             " ", " ", "NN", "NNN", "NNNN", "NNNNW", "NNNNNN",
-
-};
+                             	"N", "NNWWWW", "NNNNWWWWWWSSE", "NNNNWWWWWWSS", "NNNNWWWWWWS", "NNNNWNNWWS", "NNNNWNNWWWSWW",
+                             	"N", "NNWWSWWWW", "NNNNWWWWWS", "NNNWW", "NNNNWWWWWW", "NNNNWNNWWWSWN", "NNNNWNNWWWSWNW",
+                             	"N", "NNWWSWWW", "NNNWWWW", "NNNNN", "NNNNWWWWW", "NNNNWNNWWWSW", "NNNNWNNWWWS",
+                             	"N", "NNWWSWW", "NNWWSW", "NNWWW", "NNNNWWWW", "NNNNWNW", "NNNNWNNWWW",
+                             	"N", "N", "N", "NNNWWW", "NNNNWWW", "NNNNWW", "NNNNWNNWW",
+                             	"N", "N", "N", "NNNN", "NNNNWN", "NNNNWNN", "NNNNWNNW",
+                             	"", "NN", "NNN", "NNNW", "NNNNW", "NNNNNN", "",};
 
 enum map_choice{
     forwards, reversing, returning
 };
 
+//Enum to be swapped out to specify different maps
+enum map_choice maps = forwards;
+
 //TODO: Subsciber for position
 //TODO: Subscriber for limit switches
 
+void amcl_callback(geometry_msgs::Pose msg){
+    //global variable = msg.data
+}
+
+void grabber_callback(std_msgs::Empty msg){
+    maps = reversing;
+    ROS_INFO("Found mine at X,Y\n");
+}
+
+//Global x and y
+int global_x = 0, global_y = 0;
+
 int main(int argc, char** argv)
 {
-	//Initializes the moving client
-	ros::init(argc, argv, "simple_navigation_goals");
 
-	//tell the action client that we want to spin a thread by default
+
+    //Velocity publisher setup
+    ros::init(argc, argv, "cmd_vel_publisher_node");
+    ros::NodeHandle nh;
+    ros::Publisher vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+    geometry_msgs::Twist vel_msg;
+
+    //Dropper publisher setup
+    ros::init(argc, argv, "dropper_publisher_node");
+    ros::Nodehandle nd;
+    ros::Publisher dropper_pub = nd.advertise<std_msgs::Empty>("dropper", 1);
+    std_msgs::Empty flag;
+
+    //Coordinate subscriber setup
+    ros::init(argc, argv, "amcl_subscriber_node");
+    ros::NodeHandle ns;
+    ros::Subscriber amcl_sub = ns.subscribe("amcl", 1000, &amcl_callback);
+
+    //Limit switch subscriber setup
+    ros::init(argc, argv, "limit_switch_subscriber_node");
+    ros::NodeHandle nl;
+    ros::Subscriber limit_switch_sub = nl.subscribe("grabber", 1000, &grabber_callback);
+
+    //Rate setup
+    ros::Rate rate(0.5);
+
+    vel_pub.publish(vel_msg);
+
+    //tell the action client that we want to spin a thread by default
 	MoveBaseClient ac("move_base", true);
 
 	//wait for the action server to come up
@@ -86,11 +125,11 @@ int main(int argc, char** argv)
 	}
 
 
-    //Integers to represents x and y coordinates
-    int x = 0, y = 0;
-
     //Enum to be swapped out to specify different maps
     enum map_choice maps = forwards;
+
+    //Local integers to represents x and y coordinates
+    int x = 0, y = 0;
 
     //Main loop
     for(;;){
@@ -98,8 +137,8 @@ int main(int argc, char** argv)
         for(int i = 0; map[maps][x][y][i] != '\0';i++)
 	{
             //Switch to convert cardinal direction in string into coordinate change
-            switch()
-		{
+            switch(map[maps][x][y][i]){
+
                 case 'E':
                     //Move position one east
                     x++;
@@ -118,9 +157,8 @@ int main(int argc, char** argv)
                     break;
                 case 'R':
                     //Change map to return map
+                    dropper_pub.Publish(flag);
                     maps = returning;
-                    //Go to next iteration of loop without going anywhere
-                    continue;
                 default:
                     ROS_INFO("Unrecognized character in instruction string\n")
                     break;
@@ -128,6 +166,7 @@ int main(int argc, char** argv)
             	}
             //Go to decided on location
             gohere(x, y , ac);
+            ros::spinonce();
         }
 
         //Get location and do instructions from forward squares
