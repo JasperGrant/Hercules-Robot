@@ -37,9 +37,10 @@ void gohere(int x, int y, MoveBaseClient &ac)
 }
 //Define map structure
 //Note: mine map is flipped to the right from what you would expect.
-char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {" ", " ", " ", " ", " ", " ", " ",
+char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
+          " ", " ", " ", " ", " ", " ", " ",
                                " ", " ", " ", " ", " ", " ", " ",
-                               " ", " ", " ", " ", " ", " ", " ",
+                               " ", " ", " ", " ", " ", "NSW", " ",
                                " ", " ", " ", " ", " ", " ", " ",
                                " ", " ", " ", " ", " ", " ", " ",
                                " ", " ", " ", " ", " ", " ", " ",
@@ -65,14 +66,56 @@ enum map_choice{
     forwards, reversing, returning
 };
 
+//Enum to be swapped out to specify different maps
+enum map_choice maps = forwards;
+
+
 //TODO: Subsciber for position
 //TODO: Subscriber for limit switches
 
+void amcl_callback(geometry_msgs::Pose msg){
+    //global variable = msg.data
+}
+
+void grabber_callback(std_msgs::Empty msg){
+    maps = reversing;
+    ROS_INFO("Found mine at X,Y\n");
+}
+
+//Global x and y
+int global_x = 0, global_y = 0;
+
 int main(int argc, char** argv)
 {
-	ros::init(argc, argv, "simple_navigation_goals");
 
-	//tell the action client that we want to spin a thread by default
+    //Velocity publisher setup
+    ros::init(argc, argv, "cmd_vel_publisher_node");
+    ros::NodeHandle nh;
+    ros::Publisher vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+    geometry_msgs::Twist vel_msg;
+
+    //Dropper publisher setup
+    ros::init(argc, argv, "dropper_publisher_node");
+    ros::Nodehandle nd;
+    ros::Publisher dropper_pub = nd.advertise<std_msgs::Empty>("dropper", 1);
+    std_msgs::Empty flag;
+
+    //Coordinate subscriber setup
+    ros::init(argc, argv, "amcl_subscriber_node");
+    ros::NodeHandle ns;
+    ros::Subscriber amcl_sub = ns.subscribe("amcl", 1000, &amcl_callback);
+
+    //Limit switch subscriber setup
+    ros::init(argc, argv, "limit_switch_subscriber_node");
+    ros::NodeHandle nl;
+    ros::Subscriber limit_switch_sub = nl.subscribe("grabber", 1000, &grabber_callback);
+
+    //Rate setup
+    ros::Rate rate(0.5);
+
+    vel_pub.publish(vel_msg);
+
+    //tell the action client that we want to spin a thread by default
 	MoveBaseClient ac("move_base", true);
 
 	//wait for the action server to come up
@@ -81,16 +124,15 @@ int main(int argc, char** argv)
 		ROS_INFO("Waiting for the move_base action server to come up");
 	}
 
-    //Integers to represents x and y coordinates
+    //Local integers to represents x and y coordinates
     int x = 0, y = 0;
-    //Enum to be swapped out to specify different maps
-    enum map_choice maps = forwards;
+
     //Main loop
     for(;;){
         //Loop to go through string
         for(int i = 0; map[maps][x][y][i] != '\0';i++){
             //Switch to convert cardinal direction in string into coordinate change
-            switch(){
+            switch(map[maps][x][y][i]){
                 case 'E':
                     //Move position one east
                     x++;
@@ -109,9 +151,8 @@ int main(int argc, char** argv)
                     break;
                 case 'R':
                     //Change map to return map
+                    dropper_pub.Publish(flag);
                     maps = returning;
-                    //Go to next iteration of loop without going anywhere
-                    continue;
                 default:
                     ROS_INFO("Unrecognized character in instruction string\n")
                     break;
@@ -119,6 +160,7 @@ int main(int argc, char** argv)
             }
             //Go to decided on location
             gohere(x, y , ac);
+            ros::spinonce();
         }
 
         //Get location and do instructions from forward squares
