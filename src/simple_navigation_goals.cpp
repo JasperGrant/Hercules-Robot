@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <geometry_msgs/Twist.h>
+#include <std_msgs/Empty.h>
 
 #define PI 3.1415926
 
@@ -60,7 +62,7 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                              	"N", "NNWWSWW", "NNWWSW", "NNWWW", "NNNNWWWW", "NNNNWNW", "NNNNWNNWWW",
                              	"N", "N", "N", "NNNWWW", "NNNNWWW", "NNNNWW", "NNNNWNNWW",
                              	"N", "N", "N", "NNNN", "NNNNWN", "NNNNWNN", "NNNNWNNW",
-                             	"", "NN", "NNN", "NNNW", "NNNNW", "NNNNNN", "",};
+                             	"", "NN", "NNN", "NNNW", "NNNNW", "NNNNNN", ""};
 
 enum map_choice{
     forwards, reversing, returning
@@ -96,7 +98,7 @@ int main(int argc, char** argv)
 
     //Dropper publisher setup
     ros::init(argc, argv, "dropper_publisher_node");
-    ros::Nodehandle nd;
+    ros::NodeHandle nd;
     ros::Publisher dropper_pub = nd.advertise<std_msgs::Empty>("dropper", 1);
     std_msgs::Empty flag;
 
@@ -157,16 +159,16 @@ int main(int argc, char** argv)
                     break;
                 case 'R':
                     //Change map to return map
-                    dropper_pub.Publish(flag);
+                    dropper_pub.publish(flag);
                     maps = returning;
                 default:
-                    ROS_INFO("Unrecognized character in instruction string\n")
+                    ROS_INFO("Unrecognized character in instruction string\n");
                     break;
 
             	}
             //Go to decided on location
             gohere(x, y , ac);
-            ros::spinonce();
+            ros::spin();
         }
 
         //Get location and do instructions from forward squares
@@ -181,9 +183,4 @@ int main(int argc, char** argv)
 
 	return 0;
 }
-
-/*mine_cb(empty msg){
- *  switch to backwards grid
- * }
-
 
