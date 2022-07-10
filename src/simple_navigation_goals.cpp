@@ -28,7 +28,7 @@ void gohere(int x, int y, MoveBaseClient &ac)
 	goal.target_pose.pose.position.y = (float)y*0.3048*2+0.3048;
 
 	goal.target_pose.pose.orientation.w = 1.0;
-	ROS_INFO("Sending goal");
+	//ROS_INFO("Sending goal");
 
 	ac.sendGoal(goal);
    
@@ -167,10 +167,13 @@ int main(int argc, char** argv)
                 case 'R':
                     //Change map to return map
                     dropper_pub.publish(flag);
+					ROS_INFO("Dropped Mine");
+					ROS_INFO("Returning to %d,%d",return_x,return_y);
                     maps = 2;
                     break;
                 case 'F':
                     maps = 0;
+					ROS_INFO("Returning to fowards map");
                     break;
                 default:
                     ROS_INFO("Unrecognized character in instruction string\n");
