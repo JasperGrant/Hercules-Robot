@@ -22,9 +22,9 @@
     <arg name="move_forward_only" value="$(arg move_forward_only)"/>
   </include>
 
-  <group>
+  <!--group>
   <node name="waypoint_movement" pkg="eced3901-2022-team01" type="eced3901-2022-team01"/>
-  </group>
+  </group-->
 
   <!-- rviz -->
   <group if="$(arg open_rviz)"> 

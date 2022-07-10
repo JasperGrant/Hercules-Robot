@@ -35,9 +35,9 @@ void gohere(int x, int y, MoveBaseClient &ac)
 	ac.waitForResult();
 	
 	if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-		ROS_INFO("Hooray, the base moved 1 meter forward");
+		ROS_INFO("Moved to %d,%d",x,y);
 	else
-		ROS_INFO("The base failed to move forward 1 meter for some reason");
+		ROS_INFO("Could not reach waypoint");
 }
 
 //Define map structure
@@ -46,44 +46,45 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 				"E", "EEN", "E", "S", "S", "EEE", "S",
                                	"E", "W", "N", "EEE", "W", "N", "W",
                                	"E", "W", "S", "S", "W", "W", "S",
+                               	"E", "N", "E", "W", "W", "S", "W",
                                	"N", "N", "E", "W", "W", "S", "W",
-                               	"N", "N", "E", "W", "W", "S", "W",
-                               	"E", "S", "S", "NE", "N", "N", "W",
-                               	"", "N", "N", "W", "W", "N", "",
+                               	"E", "S", "S", "EN", "N", "N", "W",
+                               	"N", "N", "N", "W", "W", "N", "",
                                       "E", "E", "N", "N", "E", "E", "E",
                                       "E", "E", "W", "N", "E", "E", "S",
                                       "E", "E", "E", "E", "E", "N", "E",
                                       "E", "E", "E", "E", "E", "E", "E",
-                                      "N", "N", "E", "E", "E", "S", "E",
+                                      "E", "N", "E", "E", "E", "S", "E",
                                       "E", "S", "S", "E", "E", "S", "S",
                                       "R", "S", "S", "S", "S", "S", "S",
-                             	"N", "NNWWWW", "NNNNWWWWWWSSE", "NNNNWWWWWWSS", "NNNNWWWWWWS", "NNNNWNNWWS", "NNNNWNNWWWSWW",
-                             	"N", "NNWWSWWWW", "NNNNWWWWWS", "NNNWW", "NNNNWWWWWW", "NNNNWNNWWWSWN", "NNNNWNNWWWSWNW",
-                             	"N", "NNWWSWWW", "NNNWWWW", "NNNNN", "NNNNWWWWW", "NNNNWNNWWWSW", "NNNNWNNWWWS",
-                             	"N", "NNWWSWW", "NNWWSW", "NNWWW", "NNNNWWWW", "NNNNWNW", "NNNNWNNWWW",
-                             	"N", "N", "N", "NNNWWW", "NNNNWWW", "NNNNWW", "NNNNWNNWW",
-                             	"N", "N", "N", "NNNN", "NNNNWN", "NNNNWNN", "NNNNWNNW",
-                             	"", "NN", "NNN", "NNNW", "NNNNW", "NNNNNN", ""};
+                             	"NF", "NNWWWWF", "NNNNWWWWWWSSEF", "NNNNWWWWWWSSF", "NNNNWWWWWWSF", "NNNNWNNWWSF", "NNNNWNNWWWSWWF",
+                             	"NF", "NNWWSWWWWF", "NNNNWWWWWSF", "NNNWWF", "NNNNWWWWWWF", "NNNNWNNWWWSWNF", "NNNNWNNWWWSWNWF",
+                             	"NF", "NNWWSWWWF", "NNNWWWWF", "NNNNNF", "NNNNWWWWWF", "NNNNWNNWWWSWF", "NNNNWNNWWWSF",
+                             	"NF", "NNWWSWWF", "NNWWSWF", "NNWWWF", "NNNNWWWWF", "NNNNWNWF", "NNNNWNNWWWF",
+                             	"NF", "NF", "NF", "NNNWWWF", "NNNNWWWF", "NNNNWWF", "NNNNWNNWWF",
+                             	"NF", "NF", "NF", "NNNNF", "NNNNWNF", "NNNNWNNF", "NNNNWNNWF",
+                             	"", "NNF", "NNNF", "NNNWF", "NNNNWF", "NNNNNNF", ""};
 
-enum map_choice{
-    forwards, reversing, returning
-};
-
-//Enum to be swapped out to specify different maps
-enum map_choice maps = forwards;
+int maps = 0;
 
 void amcl_callback(geometry_msgs::Pose msg){
 //TODO: Conversion
     //global variable = msg.data
 }
 
-void grabber_callback(std_msgs::Empty msg){
-    maps = reversing;
-    ROS_INFO("Found mine at X,Y\n");
-}
-
 //Global x and y
 int global_x = 0, global_y = 0;
+
+//Return x & y
+int return_x, return_y;
+
+void grabber_callback(std_msgs::Empty msg)
+{
+    maps = 1;
+    ROS_INFO("Found mine at %d,%d",global_x,global_y);
+	return_x = global_x;
+	return_y = global_y;
+}
 
 int main(int argc, char** argv)
 {
@@ -104,12 +105,12 @@ int main(int argc, char** argv)
     //Coordinate subscriber setup
     ros::init(argc, argv, "amcl_subscriber_node");
     ros::NodeHandle ns;
-    ros::Subscriber amcl_sub = ns.subscribe("amcl", 1000, &amcl_callback);
+    ros::Subscriber amcl_sub = ns.subscribe("amcl", 1000, amcl_callback);
 
     //Limit switch subscriber setup
     ros::init(argc, argv, "limit_switch_subscriber_node");
     ros::NodeHandle nl;
-    ros::Subscriber limit_switch_sub = nl.subscribe("grabber", 1000, &grabber_callback);
+    ros::Subscriber limit_switch_sub = nl.subscribe("grabber", 1000, grabber_callback);
 
     //Rate setup
     ros::Rate rate(0.5);
@@ -125,17 +126,22 @@ int main(int argc, char** argv)
 		ROS_INFO("Waiting for the move_base action server to come up");
 	}
 
-
-    //Enum to be swapped out to specify different maps
-    enum map_choice maps = forwards;
-
     //Main loop
     for(;;){
 
 	//Local integers to represents x and y coordinates
-    	int x = global_x, y = global_y;
+    int x = global_x, y = global_y;
+
 	//Set local goal variables
 	int goal_x = x, goal_y = y;
+
+	//Correctly addresses return matrix
+	if(maps == 2)
+	{
+		x = return_x;
+		y = return_y;
+	}	
+
         //Loop to go through string
         for(int i = 0; map[maps][x][y][i] != '\0';i++)
 	{
@@ -161,7 +167,11 @@ int main(int argc, char** argv)
                 case 'R':
                     //Change map to return map
                     dropper_pub.publish(flag);
-                    maps = returning;
+                    maps = 2;
+                    break;
+                case 'F':
+                    maps = 0;
+                    break;
                 default:
                     ROS_INFO("Unrecognized character in instruction string\n");
                     break;
@@ -169,7 +179,9 @@ int main(int argc, char** argv)
             	}
             //Go to decided on location
             gohere(goal_x, goal_y , ac);
-            ros::spin();
+			global_x = goal_x;
+			global_y = goal_y;
+            ros::spinOnce();
         }
 
         //Get location and do instructions from forward squares
