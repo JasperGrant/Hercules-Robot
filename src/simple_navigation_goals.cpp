@@ -67,11 +67,6 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 
 int maps = 0;
 
-void amcl_callback(geometry_msgs::Pose msg){
-//TODO: Conversion
-    //global variable = msg.data
-}
-
 //Global x and y
 int global_x = 0, global_y = 0;
 
@@ -82,6 +77,8 @@ void grabber_callback(std_msgs::Empty msg)
 {
     maps = 1;
     ROS_INFO("Found mine at %d,%d",global_x,global_y);
+    //Half second delay may be enough?
+    ros::Duration(0.5).sleep();
 	return_x = global_x;
 	return_y = global_y;
 }
@@ -101,11 +98,6 @@ int main(int argc, char** argv)
     ros::NodeHandle nd;
     ros::Publisher dropper_pub = nd.advertise<std_msgs::Empty>("dropper", 1);
     std_msgs::Empty flag;
-
-    //Coordinate subscriber setup
-    ros::init(argc, argv, "amcl_subscriber_node");
-    ros::NodeHandle ns;
-    ros::Subscriber amcl_sub = ns.subscribe("amcl", 1000, amcl_callback);
 
     //Limit switch subscriber setup
     ros::init(argc, argv, "limit_switch_subscriber_node");
@@ -167,6 +159,14 @@ int main(int argc, char** argv)
                 case 'R':
                     //Change map to return map
                     dropper_pub.publish(flag);
+                    //Reverse without thinking to clear the mine
+                    vel_msg.linear.x = 1;
+                    vel_pub.publish(vel_msg);
+                    //Half second delay may be enough?
+                    ros::Duration(0.5).sleep();
+                    vel_msg.linear.x = 0;
+                    vel_pub.publish(vel_msg);
+
 					ROS_INFO("Dropped Mine");
 					ROS_INFO("Returning to %d,%d",return_x,return_y);
                     maps = 2;
