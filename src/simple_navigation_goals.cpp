@@ -14,32 +14,12 @@
 #define MAXSTRINGLEN 20
 #define MAPSIZE 7
 #define NUMBEROFMAPS 3
+#define NUMBEROFOFFSETS 2
+#define x_offsets 0
+#define y_offsets 1
+
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
-
-//Sets a waypoint at coordinates x & y
-void gohere(int x, int y, MoveBaseClient &ac)
-{
-	//TODO: Conversion to map coordinates
-	move_base_msgs::MoveBaseGoal goal;
-	goal.target_pose.header.frame_id = "map";
-	goal.target_pose.header.stamp = ros::Time::now();
-
-	goal.target_pose.pose.position.x = (float)x*0.3048*2+0.3048;
-	goal.target_pose.pose.position.y = (float)y*0.3048*2+0.3048;
-
-	goal.target_pose.pose.orientation.w = 1.0;
-	//ROS_INFO("Sending goal");
-
-	ac.sendGoal(goal);
-   
-	ac.waitForResult();
-	
-	if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-		ROS_INFO("Moved to %d,%d",x,y);
-	else
-		ROS_INFO("Could not reach waypoint");
-}
 
 //Define map structure
 //Note: mine map is flipped 90 degrees clockwise from what you would expect.
@@ -65,6 +45,51 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                              	"NF", "NF", "NF", "NNNWWWF", "NNNNWWWF", "NNNNWWF", "NNNNWNNWWF",
                              	"NF", "NF", "NF", "NNNNF", "NNNNWNF", "NNNNWNNF", "NNNNWNNWF",
                              	"", "NNF", "NNNF", "NNNWF", "NNNNWF", "NNNNNNF", ""};
+
+//X array is offsets[0], Y array is offsets[1]
+float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0
+}
+
+
+//Sets a waypoint at coordinates x & y
+void gohere(int x, int y, MoveBaseClient &ac)
+{
+    //TODO: Conversion to map coordinates
+    move_base_msgs::MoveBaseGoal goal;
+    goal.target_pose.header.frame_id = "map";
+    goal.target_pose.header.stamp = ros::Time::now();
+
+    goal.target_pose.pose.position.x = (float)x*0.3048*2+0.3048 + offsets[x_offsets][x][y];
+    goal.target_pose.pose.position.y = (float)y*0.3048*2+0.3048 + offsets[y_offsets][x][y];
+
+    goal.target_pose.pose.orientation.w = 1.0;
+    //ROS_INFO("Sending goal");
+
+    ac.sendGoal(goal);
+
+    ac.waitForResult();
+
+    if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+        ROS_INFO("Moved to %d,%d",x,y);
+    else
+        ROS_INFO("Could not reach waypoint");
+}
+
 
 int maps = 0;
 
