@@ -1,0 +1,11 @@
+<launch>
+
+  <include file="$(find eced3901-2022-team01)/launch/gz_challenge.launch"/>
+
+  <include file="$(find eced3901-2022-team01)/launch/gz_rviz_challenge.launch"/>
+
+  <group>
+  <node name="waypoint_movement" pkg="eced3901-2022-team01" type="eced3901-2022-team01"/>
+  </group>
+
+</launch>

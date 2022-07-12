@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 #include <geometry_msgs/Twist.h>
-#include <geometry_msgs/PolygonStamped.h>
+//#include <geometry_msgs/PolygonStamped.h>
 #include <std_msgs/Empty.h>
 
 #define PI 3.1415926
@@ -78,8 +78,8 @@ void grabber_callback(std_msgs::Empty msg)
 {
     maps = 1;
     //Transform to long form
-    footprint = [[0,0], [0,0], [0,0], [0,0]];
-    foot_pub.publish(footprint);
+    //footprint = [[0,0], [0,0], [0,0], [0,0]];
+    //foot_pub.publish(footprint);
     ROS_INFO("Found mine at %d,%d",global_x,global_y);
     //Half second delay may be enough?
     ros::Duration(0.5).sleep();
@@ -101,13 +101,13 @@ int main(int argc, char** argv)
     ros::NodeHandle nd;
     ros::Publisher dropper_pub = nd.advertise<std_msgs::Empty>("dropper", 1);
     std_msgs::Empty flag;
-
+/*
     //Footprint publisher setup
     ros::init(argc, argv, "footprint_publisher_node");
     ros::NodeHandle nf;
     ros::Publisher foot_pub = nf.advertise<geometry_msgs::PolygonStamped>("/move_base/local_costmap/footprint");
     geometry_msgs::PolygonStamped footprint;
-
+*/
     //Limit switch subscriber setup
     ros::init(argc, argv, "limit_switch_subscriber_node");
     ros::NodeHandle nl;
@@ -120,8 +120,8 @@ int main(int argc, char** argv)
 	MoveBaseClient ac("move_base", true);
 
     //Initialize in proper form
-    footprint = [[0,0], [0,0], [0,0], [0,0]];
-    foot_pub.publish(footprint);
+    //footprint = [[0,0], [0,0], [0,0], [0,0]];
+    //foot_pub.publish(footprint);
 
 	//wait for the action server to come up
 	while(!ac.waitForServer(ros::Duration(5.0)))
@@ -171,9 +171,9 @@ int main(int argc, char** argv)
                     //Change map to return map
                     dropper_pub.publish(flag);
                     //Transform to wide mode
-                    footprint = [[0,0], [0,0], [0,0], [0,0]];
-                    foot_pub.publish(footprint);
-                    ros::param::set("/", [[-0.31, -0.69], [-0.31, 0.25], [0.31, 0,25], [0.31, -0.69]]);
+                    //footprint = [[0,0], [0,0], [0,0], [0,0]];
+                    //foot_pub.publish(footprint);
+                    //ros::param::set("/", [[-0.31, -0.69], [-0.31, 0.25], [0.31, 0,25], [0.31, -0.69]]);
                     //Reverse without thinking to clear the mine
                     vel_msg.linear.x = -1;
                     vel_pub.publish(vel_msg);
