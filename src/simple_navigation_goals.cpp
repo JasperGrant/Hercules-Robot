@@ -156,12 +156,15 @@ int main(int argc, char** argv)
 
     //Main loop
     for(;;){
-	 vel_msg.linear.x = -1;
-         vel_pub.publish(vel_msg);
-         //Half second delay may be enough?
-         ros::Duration(2.0).sleep();
-         vel_msg.linear.x = 0;
 
+	//Debug for checking odom movement
+/*
+	vel_msg.linear.x = -1;
+        vel_pub.publish(vel_msg);
+        //Half second delay may be enough?
+        ros::Duration(2.0).sleep();
+        vel_msg.linear.x = 0;
+*/
 	//Local integers to represents x and y coordinates
     int x = global_x, y = global_y;
 
