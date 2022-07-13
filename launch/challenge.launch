@@ -23,7 +23,7 @@
   </include>
 
   <group>
-  <node name="waypoint_movement" pkg="eced3901-2022-team01" type="eced3901-2022-team01"/>
+  <node name="waypoint_movement" pkg="eced3901-2022-team01" type="eced3901-2022-team01" output="screen" launch-prefix="gnome-terminal --command"/>
   </group>
 
   <!-- rviz -->
