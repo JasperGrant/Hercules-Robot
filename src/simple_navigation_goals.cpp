@@ -24,27 +24,27 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 //Define map structure
 //Note: mine map is flipped 90 degrees clockwise from what you would expect.
 char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
-				"E", "EEN", "E", "S", "S", "EEE", "S",
-                               	"E", "W", "N", "EEE", "W", "N", "W",
-                               	"E", "W", "S", "S", "W", "W", "S",
-                               	"E", "N", "E", "W", "W", "S", "W",
-                               	"N", "N", "E", "W", "W", "S", "W",
-                               	"E", "S", "S", "EN", "N", "N", "W",
-                               	"N", "N", "N", "W", "W", "N", "",
-                                      "E", "E", "N", "N", "E", "E", "E",
-                                      "E", "E", "W", "N", "E", "E", "S",
-                                      "E", "E", "E", "E", "E", "N", "E",
-                                      "E", "E", "E", "E", "E", "E", "E",
-                                      "E", "N", "E", "E", "E", "S", "E",
-                                      "E", "S", "S", "E", "E", "S", "S",
-                                      "R", "S", "S", "S", "S", "S", "S",
-                             	"NF", "NNWWWWF", "NNNNWWWWWWSSEF", "NNNNWWWWWWSSF", "NNNNWWWWWWSF", "NNNNWNNWWSF", "NNNNWNNWWWSWWF",
-                             	"NF", "NNWWSWWWWF", "NNNNWWWWWSF", "NNNWWF", "NNNNWWWWWWF", "NNNNWNNWWWSWNF", "NNNNWNNWWWSWNWF",
-                             	"NF", "NNWWSWWWF", "NNNWWWWF", "NNNNNF", "NNNNWWWWWF", "NNNNWNNWWWSWF", "NNNNWNNWWWSF",
-                             	"NF", "NNWWSWWF", "NNWWSWF", "NNWWWF", "NNNNWWWWF", "NNNNWNWF", "NNNNWNNWWWF",
-                             	"NF", "NF", "NF", "NNNWWWF", "NNNNWWWF", "NNNNWWF", "NNNNWNNWWF",
-                             	"NF", "NF", "NF", "NNNNF", "NNNNWNF", "NNNNWNNF", "NNNNWNNWF",
-                             	"", "NNF", "NNNF", "NNNWF", "NNNNWF", "NNNNNNF", ""};
+								"N", "E", "E", "S", "S", "N", "E",
+                               	"", "E", "N", "M", "W", "W", "SEE",
+                               	"", "N", "N", "N", "W", "W", "S",
+                               	"", "", "", "", "", "M", "W",
+                               	"", "", "", "N", "N", "E", "W",
+                               	"", "", "", "M", "S", "N", "W",
+                               	"", "", "N", "N", "W", "", "",
+                                      "", "E", "N", "N", "E", "E", "S",
+                                      "", "E", "W", "N", "E", "E", "S",
+                                      "", "N", "e", "S", "S", "N", "E",
+                                      "", "", "", "", "", "E", "E",
+                                      "", "", "E", "S", "S", "S", "S",
+                                      "", "", "R", "S", "E", "S", "S",
+                                      "", "", "W", "S", "S", "", "",
+                             	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwNNWWSF", "NNNWWH", "NNNWWH",
+                             	"", "WwNF", "WwNNWSF", "EF", "WwNNWWF", "NNNWWH", "NNNWWH",
+                             	"", "WwNF", "WwNF", "WwNNF", "WwNNWF", "NNNNWWWSWF", "NNNNWWWSF",
+                             	"", "", "", "", "", "ENNF", "NNNNWWWF",
+                             	"", "", "", "WNNF", "WNNNF", "NNNF", "NNNNWWF",
+                             	"", "", "", "WNF", "NF", "NNNNF", "NNNNWF",
+                             	"", "", "ENF", "ENNF", "ENNWF", "NNNWWWWF", "NNNWWWWF"};
 
 //X array is offsets[0], Y array is offsets[1]
 float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
@@ -69,31 +69,30 @@ float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
 //Sets a waypoint at coordinates x & y
 void gohere(int x, int y, MoveBaseClient &ac)
 {
-    //TODO: Conversion to map coordinates
+	//Sets up waypoint stuff
     move_base_msgs::MoveBaseGoal goal;
     goal.target_pose.header.frame_id = "map";
     goal.target_pose.header.stamp = ros::Time::now();
 
+	//Waypoint coordinates
     goal.target_pose.pose.position.x = (float)x*0.3048*2+0.3048 + offsets[x_offsets][x][y];
     goal.target_pose.pose.position.y = (float)y*0.3048*2+0.3048 + offsets[y_offsets][x][y];
-
     goal.target_pose.pose.orientation.w = 1.0;
-    //ROS_INFO("Sending goal");
 
+	//Sets Waypoint
     ac.sendGoal(goal);
-
     ac.waitForResult();
 
+	//Sends waypoint information to ROSINFO
     if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
         ROS_INFO("Moved to %d,%d",x,y);
     else
         ROS_INFO("Could not reach waypoint");
 }
 
-
 int maps = 0;
 
-//Global x and y
+//Global x & y
 int global_x = 0, global_y = 0;
 
 //Return x & y
@@ -200,6 +199,12 @@ int main(int argc, char** argv)
                     //Move position one south
                     goal_y--;
                     break;
+                case 'e':
+                    //Move position two east
+                    goal_x+=2;
+                case 'w':
+                    //Move position two west
+                    goal_x-=2;
                 case 'R':
                     //Change map to return map
                     dropper_pub.publish(flag);
@@ -219,10 +224,16 @@ int main(int argc, char** argv)
 					ROS_INFO("Returning to %d,%d",return_x,return_y);
                     maps = 2;
                     break;
+                case 'H':
+					//Attempts to collect mine in hallway
+					//TODO
+					break;
                 case 'F':
+					//Change Map to fowards map
                     maps = 0;
 					ROS_INFO("Returning to fowards map");
                     break;
+
                 default:
                     ROS_INFO("Unrecognized character in instruction string\n");
                     break;
