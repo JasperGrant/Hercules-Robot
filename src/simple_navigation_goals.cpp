@@ -254,9 +254,25 @@ int main(int argc, char** argv)
                     maps = 2;
                     break;
                 case 'H':
-		    //Attempts to collect mine in hallway
-		    //TODO
-		    break;
+                    //Move position one north
+                    goal_y++;
+                    //Attempts to collect mine in hallway
+                    vel_msg = 0.1;
+                    vel_pub.publish(vel_msg);
+                    ros::Duration(2.0).sleep();
+                    vel_msg = 0;
+                    vel_pub.publish(vel_msg);
+
+                    break;
+                case 'h':
+                    //Move position one north
+                    goal_y--;
+                    vel_msg = 0.-1;
+                    vel_pub.publish(vel_msg);
+                    ros::Duration(2.0).sleep();
+                    vel_msg = 0;
+                    vel_pub.publish(vel_msg);
+                    break;
                 case 'F':
 		    //Change Map to fowards map
                     maps = 0;
