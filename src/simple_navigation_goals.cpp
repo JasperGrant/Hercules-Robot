@@ -58,21 +58,21 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 // Offset Maps
 // X Offsets followed by Y offsets
 float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
-        0.0, 0.0, 0.0, 0.0, -0.1, -0.1, 0.0,
-        0.0, 0.1, 1.0, 0.0, -0.1, -0.1, 0.1,
-        0.0, 0.1, 0.0, 0.0, 0.0, 0.0, -0.1,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.1,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.1,
-        0.0, 0.0, 0.0, 0.0, -0.1, 0.1, 0.0,
-        -0.3, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
-
-        0.0, 0.1, -0.1, -0.1, 0.0, 0.0, 0.1,
-        0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.1, 0.1, 0.1, -0.1, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.1, 0.1, 0.1, 0.0,
-        0.0, 0.0, 0.0, -0.1, 0.0, 0.0, 0.1,
-        0.3, 0.0, 0.0, 0.1, 0.1, 0.0, 0.0
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        -0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 };
 
 // Sets a waypoint at coordinates x & y
@@ -249,7 +249,7 @@ int main(int argc, char** argv)
 		    // Drop Mine
 		    ROS_INFO("Dropped Mine");
                     dropper_pub.publish(flag);
-                    ros::Duration(1.5).sleep();
+                    ros::Duration(2.5).sleep();
 
 		    if(mines == 6)
 		    {
@@ -303,7 +303,16 @@ int main(int argc, char** argv)
                     maps = 0;
 		    ROS_INFO("Continuing to find new mines");
                     break;
+		case 'M':
+		    //Move Foward
+                    vel_msg.linear.x = 0.1;
+                    vel_pub.publish(vel_msg);
+                    ros::Duration(1.0).sleep();
 
+                    //Stop
+                    vel_msg.linear.x = 0;
+                    vel_pub.publish(vel_msg);
+		    break;
                 default:
                     ROS_ERROR("Unrecognized Instruction\n");
                     break;
