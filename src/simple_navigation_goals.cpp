@@ -48,23 +48,24 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 
 //X array is offsets[0], Y array is offsets[1]
 float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
+        0.0, 0.0, 0.0, 0.0, -0.1, 0.0, 0.0,
+        0.0, 0.1, 0.0, 0.0, -0.1, 0.0, 0.0,
+        0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0.3048, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0
+        0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.1, 0.1, 0.1, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 };
 
+int maps = 0;
 
 //Sets a waypoint at coordinates x & y
 void gohere(int x, int y, MoveBaseClient &ac)
@@ -90,7 +91,30 @@ void gohere(int x, int y, MoveBaseClient &ac)
         ROS_INFO("Could not reach waypoint");
 }
 
-int maps = 0;
+//Sets a waypoint at coordinates x & y
+void gohere2(int x, int y, int z, MoveBaseClient &ac)
+{
+	//Sets up waypoint stuff
+    move_base_msgs::MoveBaseGoal goal;
+    goal.target_pose.header.frame_id = "map";
+    goal.target_pose.header.stamp = ros::Time::now();
+
+	//Waypoint coordinates
+    goal.target_pose.pose.position.x = (float)x*0.3048*2+0.3048 + offsets[x_offsets][x][y];
+    goal.target_pose.pose.position.y = (float)y*0.3048*2+0.3048 + offsets[y_offsets][x][y];
+    goal.target_pose.pose.orientation.z = z;
+    goal.target_pose.pose.orientation.w = 1.0;
+
+	//Sets Waypoint
+    ac.sendGoal(goal);
+    ac.waitForResult();
+
+	//Sends waypoint information to ROSINFO
+    if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+        ROS_INFO("Moved to %d,%d",x,y);
+    else
+        ROS_INFO("Could not reach waypoint");
+}
 
 //Global x & y
 int global_x = 0, global_y = 0;
@@ -208,32 +232,35 @@ int main(int argc, char** argv)
                     goal_x-=2;
 		    break;
                 case 'R':
-                    //Change map to return map
+                    //Go to mine dropoff			
+                    gohere(0, 6, ac);
+
+		    //Drop Mine
+		    ROS_INFO("Dropped Mine");
                     dropper_pub.publish(flag);
-                    //Transform to wide mode
-                    //footprint = [[0,0], [0,0], [0,0], [0,0]];
-                    //foot_pub.publish(footprint);
-                    //ros::param::set("/", [[-0.31, -0.69], [-0.31, 0.25], [0.31, 0,25], [0.31, -0.69]]);
-                    //Reverse without thinking to clear the mine
-                    vel_msg.linear.x = -1;
+                    ros::Duration(1.5).sleep();
+
+                    //Reverse for 2 seconds
+                    vel_msg.linear.x = -0.2;
                     vel_pub.publish(vel_msg);
-                    //Half second delay may be enough?
-                    ros::Duration(0.5).sleep();
+                    ros::Duration(2).sleep();
+
+		    //Stop & Recallibrate
                     vel_msg.linear.x = 0;
                     vel_pub.publish(vel_msg);
+		    ros::Duration(2).sleep();
 
-					ROS_INFO("Dropped Mine");
-					ROS_INFO("Returning to %d,%d",return_x,return_y);
+		    ROS_INFO("Returning to %d,%d",return_x,return_y);
                     maps = 2;
                     break;
                 case 'H':
-					//Attempts to collect mine in hallway
-					//TODO
-					break;
+		    //Attempts to collect mine in hallway
+		    //TODO
+		    break;
                 case 'F':
-					//Change Map to fowards map
+		    //Change Map to fowards map
                     maps = 0;
-					ROS_INFO("Returning to fowards map");
+		    ROS_INFO("Returning to fowards map");
                     break;
 
                 default:
