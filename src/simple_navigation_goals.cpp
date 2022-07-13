@@ -57,7 +57,7 @@ float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         0, 0, 0, 0, 0, 0, 0,
 
         0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0.3048, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0,
@@ -202,9 +202,11 @@ int main(int argc, char** argv)
                 case 'e':
                     //Move position two east
                     goal_x+=2;
+		    break;
                 case 'w':
                     //Move position two west
                     goal_x-=2;
+		    break;
                 case 'R':
                     //Change map to return map
                     dropper_pub.publish(flag);
