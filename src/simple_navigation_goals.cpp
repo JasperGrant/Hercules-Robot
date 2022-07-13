@@ -1,3 +1,8 @@
+// Simple_Navigation_Goals
+// Andrew Doucet
+// Jasper Grant
+
+//Inclusions
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
@@ -8,9 +13,8 @@
 //#include <geometry_msgs/PolygonStamped.h>
 #include <std_msgs/Empty.h>
 
+//Definitions
 #define PI 3.1415926
-
-
 #define MAXSTRINGLEN 20
 #define MAPSIZE 7
 #define NUMBEROFMAPS 3
@@ -21,23 +25,28 @@
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
-//Define map structure
-//Note: mine map is flipped 90 degrees clockwise from what you would expect.
+
+// Instruction Maps (Fowards/Reverse/Returning)
+// Map is flipped 90 degrees clockwise in definition
+
+int maps = 0;
+int mines = 0;
+
 char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
-								"N", "E", "E", "S", "S", "N", "E",
+				"N", "E", "E", "S", "S", "N", "E",
                                	"", "E", "N", "M", "W", "W", "SEE",
                                	"", "N", "N", "N", "W", "W", "S",
                                	"", "", "", "", "", "M", "W",
                                	"", "", "", "N", "N", "E", "W",
                                	"", "", "", "M", "S", "N", "W",
-                               	"", "", "N", "N", "W", "", "",
+                               	"", "", "N", "N", "W", "H", "",
                                       "", "E", "N", "N", "E", "E", "S",
                                       "", "E", "W", "N", "E", "E", "S",
                                       "", "N", "e", "S", "S", "N", "E",
                                       "", "", "", "", "", "E", "E",
                                       "", "", "E", "S", "S", "S", "S",
                                       "", "", "R", "S", "E", "S", "S",
-                                      "", "", "W", "S", "S", "", "",
+                                      "", "", "W", "S", "S", "h", "h",
                              	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwNNWWSF", "NNNWWH", "NNNWWH",
                              	"", "WwNF", "WwNNWSF", "EF", "WwNNWWF", "NNNWWH", "NNNWWH",
                              	"", "WwNF", "WwNF", "WwNNF", "WwNNWF", "NNNNWWWSWF", "NNNNWWWSF",
@@ -46,132 +55,125 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                              	"", "", "", "WNF", "NF", "NNNNF", "NNNNWF",
                              	"", "", "ENF", "ENNF", "ENNWF", "NNNWWWWF", "NNNWWWWF"};
 
-//X array is offsets[0], Y array is offsets[1]
+// Offset Maps
+// X Offsets followed by Y offsets
 float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
-        0.0, 0.0, 0.0, 0.0, -0.1, 0.0, 0.0,
-        0.0, 0.1, 0.0, 0.0, -0.1, 0.0, 0.0,
-        0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, -0.1, -0.1, 0.0,
+        0.0, 0.1, 1.0, 0.0, -0.1, -0.1, 0.1,
+        0.0, 0.1, 0.0, 0.0, 0.0, 0.0, -0.1,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.1,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.1,
+        0.0, 0.0, 0.0, 0.0, -0.1, 0.1, 0.0,
+        -0.3, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
 
-        0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.1, -0.1, -0.1, 0.0, 0.0, 0.1,
         0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.1, 0.1, 0.1, 0.0, 0.0,
+        0.0, 0.0, 0.1, 0.1, 0.1, -0.1, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        0.0, 0.0, 0.0, 0.1, 0.1, 0.1, 0.0,
+        0.0, 0.0, 0.0, -0.1, 0.0, 0.0, 0.1,
+        0.3, 0.0, 0.0, 0.1, 0.1, 0.0, 0.0
 };
 
-int maps = 0;
-
-//Sets a waypoint at coordinates x & y
+// Sets a waypoint at coordinates x & y
 void gohere(int x, int y, MoveBaseClient &ac)
 {
-	//Sets up waypoint stuff
+   // Sets up waypoint stuff
     move_base_msgs::MoveBaseGoal goal;
     goal.target_pose.header.frame_id = "map";
     goal.target_pose.header.stamp = ros::Time::now();
 
-	//Waypoint coordinates
+   // Waypoint coordinates
     goal.target_pose.pose.position.x = (float)x*0.3048*2+0.3048 + offsets[x_offsets][x][y];
     goal.target_pose.pose.position.y = (float)y*0.3048*2+0.3048 + offsets[y_offsets][x][y];
     goal.target_pose.pose.orientation.w = 1.0;
 
-	//Sets Waypoint
+    // Sets Waypoint
     ac.sendGoal(goal);
     ac.waitForResult();
 
-	//Sends waypoint information to ROSINFO
-    if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-        ROS_INFO("Moved to %d,%d",x,y);
+    // Sends waypoint information to ROSINFO
+    if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED);
+        //ROS_INFO("Moved to %d,%d",x,y);
     else
-        ROS_INFO("Could not reach waypoint");
+        ROS_ERROR("Could not reach waypoint");
 }
 
-//Sets a waypoint at coordinates x & y
-void gohere2(int x, int y, int z, MoveBaseClient &ac)
+// Sets a waypoint at coordinates x & y
+// Also sets a direction
+void gohere2(int x, int y, float z, MoveBaseClient &ac)
 {
-	//Sets up waypoint stuff
+    // Sets up waypoint stuff
     move_base_msgs::MoveBaseGoal goal;
     goal.target_pose.header.frame_id = "map";
     goal.target_pose.header.stamp = ros::Time::now();
 
-	//Waypoint coordinates
+    // Waypoint coordinates
     goal.target_pose.pose.position.x = (float)x*0.3048*2+0.3048 + offsets[x_offsets][x][y];
     goal.target_pose.pose.position.y = (float)y*0.3048*2+0.3048 + offsets[y_offsets][x][y];
     goal.target_pose.pose.orientation.z = z;
     goal.target_pose.pose.orientation.w = 1.0;
 
-	//Sets Waypoint
+    // Sets Waypoint
     ac.sendGoal(goal);
     ac.waitForResult();
 
-	//Sends waypoint information to ROSINFO
-    if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-        ROS_INFO("Moved to %d,%d",x,y);
+    // Sends waypoint information to ROSINFO
+    if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED);
+        //ROS_INFO("Moved to %d,%d",x,y);
     else
-        ROS_INFO("Could not reach waypoint");
+        ROS_ERROR("Could not reach waypoint");
 }
 
-//Global x & y
+// Global x & y
 int global_x = 0, global_y = 0;
 
-//Return x & y
+// Return x & y
 int return_x, return_y;
 
+// Callback when mines is found
 void grabber_callback(std_msgs::Empty msg)
 {
     maps = 1;
-    //Transform to long form
-    //footprint = [[0,0], [0,0], [0,0], [0,0]];
-    //foot_pub.publish(footprint);
-    ROS_INFO("Found mine at %d,%d",global_x,global_y);
+    mines++;
+    ROS_WARN("Found Mine At %d'',%d''",global_x*2+1,global_y*2+1);
+    ROS_WARN("%d Mines Found",mines);
+    ROS_WARN("%d Mines Remaining",6-mines);
+
     //Half second delay may be enough?
     ros::Duration(0.5).sleep();
-	return_x = global_x;
-	return_y = global_y;
+    return_x = global_x;
+    return_y = global_y;
 }
 
 int main(int argc, char** argv)
 {
+    ROS_INFO("Challenge Start");
 
-    //Velocity publisher setup
+    // Velocity publisher setup
     ros::init(argc, argv, "cmd_vel_publisher_node");
     ros::NodeHandle nh;
     ros::Publisher vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     geometry_msgs::Twist vel_msg;
 
-    //Dropper publisher setup
+    // Dropper publisher setup
     ros::init(argc, argv, "dropper_publisher_node");
     ros::NodeHandle nd;
     ros::Publisher dropper_pub = nd.advertise<std_msgs::Empty>("dropper", 1);
     std_msgs::Empty flag;
-/*
-    //Footprint publisher setup
-    ros::init(argc, argv, "footprint_publisher_node");
-    ros::NodeHandle nf;
-    ros::Publisher foot_pub = nf.advertise<geometry_msgs::PolygonStamped>("/move_base/local_costmap/footprint");
-    geometry_msgs::PolygonStamped footprint;
-*/
-    //Limit switch subscriber setup
+
+    // Limit switch subscriber setup
     ros::init(argc, argv, "limit_switch_subscriber_node");
     ros::NodeHandle nl;
     ros::Subscriber limit_switch_sub = nl.subscribe("grabber", 1000, grabber_callback);
 
-    //Rate setup
+    // Rate setup
     ros::Rate rate(0.5);
 
-    //tell the action client that we want to spin a thread by default
+    // Ttell the action client that we want to spin a thread by default
 	MoveBaseClient ac("move_base", true);
 
-    //Initialize in proper form
-    //footprint = [[0,0], [0,0], [0,0], [0,0]];
-    //foot_pub.publish(footprint);
-
-	//wait for the action server to come up
+	// Wait for the action server to come up
 	while(!ac.waitForServer(ros::Duration(5.0)))
 	{
 		ROS_INFO("Waiting for the move_base action server to come up");
@@ -181,64 +183,78 @@ int main(int argc, char** argv)
     for(;;){
 
 	//Debug for checking odom movement
-/*
+
+	/*
 	vel_msg.linear.x = -1;
         vel_pub.publish(vel_msg);
         //Half second delay may be enough?
         ros::Duration(2.0).sleep();
         vel_msg.linear.x = 0;
-*/
-	//Local integers to represents x and y coordinates
-    int x = global_x, y = global_y;
+	*/
 
-	//Set local goal variables
+	// Local integers to represents x and y coordinates
+        int x = global_x, y = global_y;
+
+	// Set local goal variables
 	int goal_x = x, goal_y = y;
 
-	//Correctly addresses return matrix
+	// Correctly addresses return matrix
 	if(maps == 2)
 	{
 		x = return_x;
 		y = return_y;
 	}	
 
-        //Loop to go through string
+        // Loop to go through string
         for(int i = 0; map[maps][x][y][i] != '\0';i++)
 	{
-            //Switch to convert cardinal direction in string into coordinate change
+            // Switch to convert cardinal direction in string into coordinate change
             switch(map[maps][x][y][i]){
 
                 case 'E':
                     //Move position one east
+		    ROS_INFO("Moving east");
                     goal_x++;
                     break;
                 case 'W':
                     //Move position one west
+                    ROS_INFO("Moving west");
                     goal_x--;
                     break;
                 case 'N':
                     //Move position one north
+                    ROS_INFO("Moving north");
                     goal_y++;
                     break;
                 case 'S':
+                    ROS_INFO("Moving south");
                     //Move position one south
                     goal_y--;
                     break;
                 case 'e':
                     //Move position two east
+                    ROS_INFO("Moving through wildlife");
                     goal_x+=2;
 		    break;
                 case 'w':
                     //Move position two west
+                    ROS_INFO("Moving through wildlife");
                     goal_x-=2;
 		    break;
                 case 'R':
-                    //Go to mine dropoff			
-                    gohere(0, 6, ac);
+                    // Go to mine dropoff			
+                    gohere2(6, 0, -PI/2, ac);
+ 
 
-		    //Drop Mine
+		    // Drop Mine
 		    ROS_INFO("Dropped Mine");
                     dropper_pub.publish(flag);
                     ros::Duration(1.5).sleep();
+
+		    if(mines == 6)
+		    {
+			goto end;
+		    }
 
                     //Reverse for 2 seconds
                     vel_msg.linear.x = -0.2;
@@ -251,56 +267,59 @@ int main(int argc, char** argv)
 		    ros::Duration(2).sleep();
 
 		    ROS_INFO("Returning to %d,%d",return_x,return_y);
+                    gohere(5, 2, ac);
                     maps = 2;
                     break;
                 case 'H':
+                    //Orients robot
+                    gohere2(x, y, PI/2, ac);
+
                     //Move position one north
                     goal_y++;
-                    //Attempts to collect mine in hallway
-                    vel_msg = 0.1;
+
+                    //Move Foward
+                    vel_msg.linear.x = 0.1;
                     vel_pub.publish(vel_msg);
                     ros::Duration(2.0).sleep();
-                    vel_msg = 0;
+
+                    //Stop
+                    vel_msg.linear.x = 0;
                     vel_pub.publish(vel_msg);
 
                     break;
                 case 'h':
-                    //Move position one north
+                    //Back up
                     goal_y--;
-                    vel_msg = 0.-1;
+                    vel_msg.linear.x = -0.1;
                     vel_pub.publish(vel_msg);
                     ros::Duration(2.0).sleep();
-                    vel_msg = 0;
+
+	            //Stop
+                    vel_msg.linear.x = 0;
                     vel_pub.publish(vel_msg);
                     break;
                 case 'F':
 		    //Change Map to fowards map
                     maps = 0;
-		    ROS_INFO("Returning to fowards map");
+		    ROS_INFO("Continuing to find new mines");
                     break;
 
                 default:
-                    ROS_INFO("Unrecognized character in instruction string\n");
+                    ROS_ERROR("Unrecognized Instruction\n");
                     break;
 
             	}
             //Go to decided on location
             gohere(goal_x, goal_y , ac);
-			global_x = goal_x;
-			global_y = goal_y;
+	    global_x = goal_x;
+	    global_y = goal_y;
             ros::spinOnce();
         }
-
-        //Get location and do instructions from forward squares
-        //If callback is activated:
-            //Switch to backward squares
-            //Return mine
-        //If in ending square
-            //Switch to forward aquares
     }
 
-    //subscriber with callback: mine is in proper distance
-
-	return 0;
+    end:
+    ROS_INFO("All mines returned");
+    ros::Duration(5.0).sleep();
+    return 0;
 }
 
