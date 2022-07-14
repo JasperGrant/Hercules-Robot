@@ -33,8 +33,10 @@ int maps = 0;
 int mines = 0;
 bool flag2 = false;
 
+//NEEEENEENN
+
 char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
-				"NEEEENEENN", "E", "E", "S", "S", "N", "E",
+				"N", "E", "E", "S", "S", "N", "E",
                                	"", "E", "N", "M", "W", "W", "SEEESSSEE",
                                	"", "N", "N", "N", "W", "W", "S",
                                	"", "", "", "", "", "M", "W",
@@ -54,7 +56,7 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                              	"", "", "", "", "", "NNF", "NNNNWWWF",
                              	"", "", "", "WNNF", "WNNNF", "WNNNWF", "NNNNWWF",
                              	"", "", "", "WNF", "NNNF", "NNNNF", "NNNNWF",
-                             	"", "", "ENF", "ENNF", "N", "N", "N"};
+                             	"", "", "ENF", "ENNF", "ENNF", "NNNWWWWF", "NNNWWWWF"};
 
 // Offset MapsNNNWWH
 // X Offsets followed by Y offsets
@@ -63,8 +65,8 @@ float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.1,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.1, 0.1, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1,
+        0.0, 0.0, 0.0, 0.1, 0.2, 0.1, 0.0,
+        0.0, 0.0, 0.0, 0.1, 0.075, 0.175, 0.175,
         -0.3, -0.3, 0.0, 0.0, 0.1, 0.0, 0.0,
 
         0.0, 0.0, -0.05 ,0.0, 0.0, 0.1, -0.1,
@@ -102,7 +104,7 @@ void gohere(int x, int y, MoveBaseClient &ac)
 
 // Sets a waypoint at coordinates x & y
 // Also sets a direction
-void gohere2(int x, int y, float z, MoveBaseClient &ac)
+void gohere2(float z, MoveBaseClient &ac)
 {
     // Sets up waypoint stuff
     move_base_msgs::MoveBaseGoal goal;
@@ -110,10 +112,10 @@ void gohere2(int x, int y, float z, MoveBaseClient &ac)
     goal.target_pose.header.stamp = ros::Time::now();
 
     // Waypoint coordinates
-    goal.target_pose.pose.position.x = (float)x*0.3048*2+0.3048 + offsets[x_offsets][x][y];
-    goal.target_pose.pose.position.y = (float)y*0.3048*2+0.3048 + offsets[y_offsets][x][y];
-    goal.target_pose.pose.orientation.z = z;
-    goal.target_pose.pose.orientation.w = 1.0;
+    goal.target_pose.pose.orientation.x = 0;
+    goal.target_pose.pose.orientation.y = 0;
+    goal.target_pose.pose.orientation.z = 0.707;
+    goal.target_pose.pose.orientation.w = 0.707;
 
     // Sets Waypoint
     ac.sendGoal(goal);
@@ -244,8 +246,9 @@ int main(int argc, char** argv)
 		    break;
                 case 'R':
                     // Go to mine dropoff	
-                    gohere2(6, 1, -PI/2, ac);		
-                    gohere2(6, 0, -PI/2, ac);
+                    gohere(6, 1, ac);		
+                    gohere(6, 0, ac);
+		    gohere2(-PI/2,ac);
  
 
 		    // Drop Mine
@@ -276,7 +279,7 @@ int main(int argc, char** argv)
                 case 'H':
 		    ROS_INFO("Fowarding");
                     //Orients robot
-                    //gohere2(x, y, PI/2, ac);
+                    gohere2(PI/2, ac);
 
                     //Move position one north
                     goal_y++;
@@ -295,6 +298,7 @@ int main(int argc, char** argv)
                     break;
                 case 'h':
                     //Back up
+                    ros::Duration(3).sleep();
 		    ROS_INFO("Backing");
                     goal_y--;
                     vel_msg.linear.x = -0.2;
