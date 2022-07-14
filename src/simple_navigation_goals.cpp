@@ -329,6 +329,15 @@ int main(int argc, char** argv)
 		
                     flag2 = true;
 		    break;
+		case 'G':
+		    //Shortcut to goal
+		    goal_x = x;
+		    goal_y = y;
+		    break;
+		case 'O':
+		    //Shortcut to exit
+		    goal_x = 5;
+		    goal_y = 2;
                 default:
                     ROS_ERROR("Unrecognized Instruction\n");
                     break;
