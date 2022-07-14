@@ -31,6 +31,7 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 
 int maps = 0;
 int mines = 0;
+bool flag2 = false;
 
 char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 				"NEEEENEENN", "E", "E", "S", "S", "N", "E",
@@ -39,7 +40,7 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                                	"", "", "", "", "", "M", "W",
                                	"", "", "", "N", "N", "W", "W",
                                	"", "", "", "M", "N", "N", "W",
-                               	"", "", "N", "N", "H", "H", "",
+                               	"", "", "N", "N", "H", "H", "M",
                                       "", "E", "N", "N", "E", "E", "S",
                                       "", "E", "W", "N", "E", "E", "S",
                                       "", "N", "e", "S", "S", "E", "E",
@@ -283,11 +284,13 @@ int main(int argc, char** argv)
                     //Move Foward
                     vel_msg.linear.x = 0.2;
                     vel_pub.publish(vel_msg);
-                    ros::Duration(2.0).sleep();
+                    ros::Duration(2.5).sleep();
 
                     //Stop
                     vel_msg.linear.x = 0;
                     vel_pub.publish(vel_msg);
+
+	            flag2 = true;
 
                     break;
                 case 'h':
@@ -296,11 +299,13 @@ int main(int argc, char** argv)
                     goal_y--;
                     vel_msg.linear.x = -0.2;
                     vel_pub.publish(vel_msg);
-                    ros::Duration(2.0).sleep();
+                    ros::Duration(3).sleep();
 
 	            //Stop
                     vel_msg.linear.x = 0;
                     vel_pub.publish(vel_msg);
+
+		    flag2 = true;
                     break;
                 case 'F':
 		    //Change Map to fowards map
@@ -316,6 +321,8 @@ int main(int argc, char** argv)
                     //Stop
                     vel_msg.linear.x = 0;
                     vel_pub.publish(vel_msg);
+		
+                    flag2 = true;
 		    break;
                 default:
                     ROS_ERROR("Unrecognized Instruction\n");
@@ -323,7 +330,12 @@ int main(int argc, char** argv)
 
             	}
             //Go to decided on location
-            gohere(goal_x, goal_y , ac);
+	    if (!flag2)
+	    {
+                gohere(goal_x, goal_y , ac);
+	    }
+
+	    flag2 = false;  
 	    global_x = goal_x;
 	    global_y = goal_y;
             ros::spinOnce();
