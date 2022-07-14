@@ -33,7 +33,7 @@ int maps = 0;
 int mines = 0;
 
 char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
-				"N", "E", "E", "S", "S", "N", "E",
+				"NEEEENEENN", "E", "E", "S", "S", "N", "E",
                                	"", "E", "N", "M", "W", "W", "SEEESSSEE",
                                	"", "N", "N", "N", "W", "W", "S",
                                	"", "", "", "", "", "M", "W",
@@ -53,7 +53,7 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                              	"", "", "", "", "", "NNF", "NNNNWWWF",
                              	"", "", "", "WNNF", "WNNNF", "WNNNWF", "NNNNWWF",
                              	"", "", "", "WNF", "NNNF", "NNNNF", "NNNNWF",
-                             	"", "", "ENF", "ENNF", "ENNF", "NNNWWWWF", "NNNWWWWF"};
+                             	"", "", "ENF", "ENNF", "N", "N", "N"};
 
 // Offset MapsNNNWWH
 // X Offsets followed by Y offsets
@@ -260,7 +260,7 @@ int main(int argc, char** argv)
                     //Reverse for 2 seconds
                     vel_msg.linear.x = -0.2;
                     vel_pub.publish(vel_msg);
-                    ros::Duration(2).sleep();
+                    ros::Duration(2.0).sleep();
 
 		    //Stop & Recallibrate
                     vel_msg.linear.x = 0;
@@ -273,14 +273,15 @@ int main(int argc, char** argv)
                     maps = 2;
                     break;
                 case 'H':
+		    ROS_INFO("Fowarding");
                     //Orients robot
-                    gohere2(x, y, PI/2, ac);
+                    //gohere2(x, y, PI/2, ac);
 
                     //Move position one north
                     goal_y++;
 
                     //Move Foward
-                    vel_msg.linear.x = 0.1;
+                    vel_msg.linear.x = 0.2;
                     vel_pub.publish(vel_msg);
                     ros::Duration(2.0).sleep();
 
@@ -291,8 +292,9 @@ int main(int argc, char** argv)
                     break;
                 case 'h':
                     //Back up
+		    ROS_INFO("Backing");
                     goal_y--;
-                    vel_msg.linear.x = -0.1;
+                    vel_msg.linear.x = -0.2;
                     vel_pub.publish(vel_msg);
                     ros::Duration(2.0).sleep();
 
