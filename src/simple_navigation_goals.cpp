@@ -34,28 +34,28 @@ int mines = 0;
 
 char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 				"N", "E", "E", "S", "S", "N", "E",
-                               	"", "E", "N", "M", "W", "W", "SEE",
+                               	"", "E", "N", "M", "W", "W", "SEEESSSEE",
                                	"", "N", "N", "N", "W", "W", "S",
                                	"", "", "", "", "", "M", "W",
-                               	"", "", "", "N", "N", "E", "W",
-                               	"", "", "", "M", "S", "N", "W",
-                               	"", "", "N", "N", "W", "H", "",
+                               	"", "", "", "N", "N", "W", "W",
+                               	"", "", "", "M", "N", "N", "W",
+                               	"", "", "N", "N", "H", "H", "",
                                       "", "E", "N", "N", "E", "E", "S",
                                       "", "E", "W", "N", "E", "E", "S",
-                                      "", "N", "e", "S", "S", "N", "E",
+                                      "", "N", "e", "S", "S", "E", "E",
                                       "", "", "", "", "", "E", "E",
                                       "", "", "E", "S", "S", "S", "S",
-                                      "", "", "R", "S", "E", "S", "S",
+                                      "", "", "R", "S", "S", "S", "S",
                                       "", "", "W", "S", "S", "h", "h",
-                             	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwNNWWSF", "NNNWWH", "NNNWWH",
-                             	"", "WwNF", "WwNNWSF", "EF", "WwNNWWF", "NNNWWH", "NNNWWH",
-                             	"", "WwNF", "WwNF", "WwNNF", "WwNNWF", "NNNNWWWSWF", "NNNNWWWSF",
-                             	"", "", "", "", "", "ENNF", "NNNNWWWF",
-                             	"", "", "", "WNNF", "WNNNF", "NNNF", "NNNNWWF",
-                             	"", "", "", "WNF", "NF", "NNNNF", "NNNNWF",
-                             	"", "", "ENF", "ENNF", "ENNWF", "NNNWWWWF", "NNNWWWWF"};
+                             	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwNNWWSF", "EF", "EF",
+                             	"", "WwNF", "WwNNWSF", "NF", "WwNNWWF", "EF", "EF",
+                             	"", "WwNF", "WwNF", "WwNNF", "WwNNWF", "NNNWWWWF", "NNNNWWWF",
+                             	"", "", "", "", "", "NNF", "NNNNWWWF",
+                             	"", "", "", "WNNF", "WNNNF", "WNNNWF", "NNNNWWF",
+                             	"", "", "", "WNF", "NNNF", "NNNNF", "NNNNWF",
+                             	"", "", "ENF", "ENNF", "ENNF", "NNNWWWWF", "NNNWWWWF"};
 
-// Offset Maps
+// Offset MapsNNNWWH
 // X Offsets followed by Y offsets
 float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
