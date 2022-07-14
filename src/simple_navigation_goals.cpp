@@ -46,7 +46,7 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                                       "", "", "", "", "", "E", "E",
                                       "", "", "E", "S", "S", "S", "S",
                                       "", "", "R", "S", "S", "S", "S",
-                                      "", "", "W", "S", "S", "h", "h",
+                                      "", "", "R", "S", "S", "h", "h",
                              	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwNNWWSF", "EF", "EF",
                              	"", "WwNF", "WwNNWSF", "NF", "WwNNWWF", "EF", "EF",
                              	"", "WwNF", "WwNF", "WwNNF", "WwNNWF", "NNNWWWWF", "NNNNWWWF",
@@ -64,7 +64,7 @@ float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.1, 0.1, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1,
-        -0.3, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0,
+        -0.3, -0.3, 0.0, 0.0, 0.1, 0.0, 0.0,
 
         0.0, 0.0, -0.05 ,0.0, 0.0, 0.1, -0.1,
         0.0, 0.0, -0.05, 0.0, 0.0, 0.0, -0.1,
@@ -72,7 +72,7 @@ float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
-        0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        0.3, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0
 };
 
 // Sets a waypoint at coordinates x & y
@@ -242,7 +242,8 @@ int main(int argc, char** argv)
                     goal_x-=2;
 		    break;
                 case 'R':
-                    // Go to mine dropoff			
+                    // Go to mine dropoff	
+                    gohere2(6, 1, -PI/2, ac);		
                     gohere2(6, 0, -PI/2, ac);
  
 
@@ -267,7 +268,8 @@ int main(int argc, char** argv)
 		    ros::Duration(2).sleep();
 
 		    ROS_INFO("Returning to %d,%d",return_x,return_y);
-                    gohere(5, 2, ac);
+		    goal_x = 5;
+		    goal_y = 2;
                     maps = 2;
                     break;
                 case 'H':
