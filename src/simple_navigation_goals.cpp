@@ -43,13 +43,13 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                                	"", "", "", "N", "N", "W", "W",
                                	"", "", "", "M", "N", "N", "W",
                                	"", "", "N", "N", "H", "H", "M",
-                                      "", "E", "N", "N", "E", "R", "S",
-                                      "", "E", "W", "N", "E", "R", "R",
-                                      "", "N", "R", "S", "S", "R", "R",
-                                      "", "", "", "", "", "R", "R",
-                                      "", "", "R", "R", "R", "R", "R",
-                                      "", "", "R", "R", "R", "R", "R",
-                                      "", "", "R", "R", "R", "h", "h",
+                                      "", "E", "N", "N", "E", "O", "S",
+                                      "", "E", "W", "N", "E", "O", "O",
+                                      "", "N", "O", "S", "S", "O", "O",
+                                      "", "", "", "", "", "O", "O",
+                                      "", "", "O", "O", "O", "O", "O",
+                                      "", "", "R", "O", "O", "O", "O",
+                                      "", "", "O", "O", "O", "h", "h",
                              	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwGF", "EF", "EF",
                              	"", "WwNF", "WwNNWSF", "NF", "WwGF", "EF", "EF",
                              	"", "WwNF", "GF", "WwGF", "WwGF", "EF", "GF",
@@ -316,7 +316,6 @@ int main(int argc, char** argv)
 		    //Change Map to fowards map
                     maps = 0;
 		    ROS_INFO("Continuing to find new mines");
-		    flag2 = true;
                     break;
 		case 'M':
 		    //Move Foward
@@ -334,6 +333,7 @@ int main(int argc, char** argv)
 		    //Shortcut to goal
 		    goal_x = x;
 		    goal_y = y;
+		    ROS_INFO("G");
 		    break;
 		case 'O':
 		    //Shortcut to exit
