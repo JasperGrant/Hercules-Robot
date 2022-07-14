@@ -43,20 +43,20 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                                	"", "", "", "N", "N", "W", "W",
                                	"", "", "", "M", "N", "N", "W",
                                	"", "", "N", "N", "H", "H", "M",
-                                      "", "E", "N", "N", "E", "E", "S",
-                                      "", "E", "W", "N", "E", "E", "S",
-                                      "", "N", "e", "S", "S", "E", "E",
-                                      "", "", "", "", "", "E", "E",
-                                      "", "", "E", "S", "S", "S", "S",
-                                      "", "", "R", "S", "S", "S", "S",
-                                      "", "", "R", "S", "S", "h", "h",
-                             	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwNNWWSF", "EF", "EF",
-                             	"", "WwNF", "WwNNWSF", "NF", "WwNNWWF", "EF", "EF",
-                             	"", "WwNF", "WwNF", "WwNNF", "WwNNWF", "NNNWWWWF", "NNNNWWWF",
-                             	"", "", "", "", "", "NNF", "NNNNWWWF",
-                             	"", "", "", "WNNF", "WNNNF", "WNNNWF", "NNNNWWF",
-                             	"", "", "", "WNF", "NNNF", "NNNNF", "NNNNWF",
-                             	"", "", "ENF", "ENNF", "ENNF", "NNNWWWWF", "NNNWWWWF"};
+                                      "", "E", "N", "N", "E", "R", "S",
+                                      "", "E", "W", "N", "E", "R", "R",
+                                      "", "N", "R", "S", "S", "R", "R",
+                                      "", "", "", "", "", "R", "R",
+                                      "", "", "R", "R", "R", "R", "R",
+                                      "", "", "R", "R", "R", "R", "R",
+                                      "", "", "R", "R", "R", "h", "h",
+                             	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwGF", "EF", "EF",
+                             	"", "WwNF", "WwNNWSF", "NF", "WwGF", "EF", "EF",
+                             	"", "WwNF", "GF", "WwGF", "WwGF", "EF", "GF",
+                             	"", "", "", "", "", "NNF", "GF",
+                             	"", "", "", "WGF", "WGF", "WGF", "GF",
+                             	"", "", "", "WNF", "GF", "GF", "GF",
+                             	"", "", "GF", "GF", "GF", "NNNWWWWF", "NNNWWWWF"};
 
 // Offset MapsNNNWWH
 // X Offsets followed by Y offsets
@@ -316,6 +316,7 @@ int main(int argc, char** argv)
 		    //Change Map to fowards map
                     maps = 0;
 		    ROS_INFO("Continuing to find new mines");
+		    flag2 = true;
                     break;
 		case 'M':
 		    //Move Foward
@@ -338,6 +339,7 @@ int main(int argc, char** argv)
 		    //Shortcut to exit
 		    goal_x = 5;
 		    goal_y = 2;
+		    break;
                 default:
                     ROS_ERROR("Unrecognized Instruction\n");
                     break;
