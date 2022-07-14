@@ -8,9 +8,9 @@ TrajectoryPlannerROS:
   min_vel_theta: -1.0
   min_in_place_vel_theta: 1.0
 
-  acc_lim_x: 1.0
+  acc_lim_x: 10.0
   acc_lim_y: 0.0
-  acc_lim_theta: 0.6
+  acc_lim_theta: 10.0
 
 # Goal Tolerance Parameters
   xy_goal_tolerance: 0.075

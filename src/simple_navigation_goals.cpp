@@ -43,11 +43,11 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                                	"", "", "", "N", "N", "W", "W",
                                	"", "", "", "M", "N", "N", "W",
                                	"", "", "N", "N", "H", "H", "M",
-                                      "", "E", "N", "N", "E", "O", "S",
-                                      "", "E", "W", "N", "E", "O", "O",
+                                      "", "E", "N", "N", "E", "E", "S",
+                                      "", "E", "W", "N", "E", "E", "S",
                                       "", "N", "O", "S", "S", "O", "O",
-                                      "", "", "", "", "", "O", "O",
-                                      "", "", "O", "O", "O", "O", "O",
+                                      "", "", "", "", "", "E", "O",
+                                      "", "", "O", "S", "S", "O", "O",
                                       "", "", "R", "O", "O", "O", "O",
                                       "", "", "O", "O", "O", "h", "h",
                              	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwGF", "EF", "EF",
@@ -61,11 +61,11 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 // Offset MapsNNNWWH
 // X Offsets followed by Y offsets
 float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
-        0.0, 0.0, 0.0, 0.05, 0.05, 0.1, 0.1,
+        0.0, 0.0, 0.15, 0.15, 0.15, 0.1, 0.1,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.1,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.1, 0.2, 0.1, 0.0,
+        0.0, 0.0, 0.0, -0.5, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.5, 0.1, 0.2, 0.1, 0.0,
         0.0, 0.0, 0.0, 0.1, 0.075, 0.175, 0.175,
         -0.3, -0.3, 0.0, 0.0, 0.1, 0.0, 0.0,
 
@@ -75,7 +75,7 @@ float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
-        0.3, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0
+        0.3, 0.3, 0.0, 0.1, 0.05, 0.0, 0.0
 };
 
 // Sets a waypoint at coordinates x & y
@@ -293,13 +293,13 @@ int main(int argc, char** argv)
                     //Stop
                     vel_msg.linear.x = 0;
                     vel_pub.publish(vel_msg);
-
+                    ros::Duration(1).sleep();
 	            flag2 = true;
 
                     break;
                 case 'h':
                     //Back up
-                    ros::Duration(3).sleep();
+                    ros::Duration(4).sleep();
 		    ROS_INFO("Backing");
                     goal_y--;
                     vel_msg.linear.x = -0.2;
