@@ -70,8 +70,8 @@ float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
         0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 };
 
@@ -141,7 +141,7 @@ void grabber_callback(std_msgs::Empty msg)
     ROS_WARN("%d Mines Remaining",6-mines);
 
     //Half second delay may be enough?
-    ros::Duration(0.5).sleep();
+    ros::Duration(2.5).sleep();
     return_x = global_x;
     return_y = global_y;
 }
