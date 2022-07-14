@@ -106,6 +106,7 @@ void gohere(int x, int y, MoveBaseClient &ac)
 // Also sets a direction
 void gohere2(float z, MoveBaseClient &ac)
 {
+	return;
     // Sets up waypoint stuff
     move_base_msgs::MoveBaseGoal goal;
     goal.target_pose.header.frame_id = "map";
@@ -248,7 +249,7 @@ int main(int argc, char** argv)
                     // Go to mine dropoff	
                     gohere(6, 1, ac);		
                     gohere(6, 0, ac);
-		    gohere2(-PI/2,ac);
+		    //gohere2(-PI/2,ac);
  
 
 		    // Drop Mine
@@ -279,7 +280,7 @@ int main(int argc, char** argv)
                 case 'H':
 		    ROS_INFO("Fowarding");
                     //Orients robot
-                    gohere2(PI/2, ac);
+                    //gohere2(PI/2, ac);
 
                     //Move position one north
                     goal_y++;
