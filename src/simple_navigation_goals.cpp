@@ -62,7 +62,7 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 // X Offsets followed by Y offsets
 float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         0.0, 0.0, 0.10, 0.15, 0.10, 0.1, 0.1,
-        0.0, 0.0, 0.10, 0.0, 0.0, 0.0, -0.05,
+        0.0, 0.0, 0.10, 0.0, 0.0, 0.0, -0.5,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1,
         0.0, 0.0, 0.0, -0.5, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.5, 0.1, 0.2, 0.1, 0.0,
@@ -70,7 +70,7 @@ float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         -0.3, -0.3, 0.0, 0.0, 0.1, 0.0, 0.0,
 
         0.0, 0.0, -0.05 ,0.0, 0.0, 0.1, -0.05,
-        0.0, 0.0, -0.05, 0.0, 0.0, 0.0, -0.05,
+        0.0, 0.0, -0.05, 0.0, 0.0, 0.0, -0.5,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
@@ -140,7 +140,7 @@ void grabber_callback(std_msgs::Empty msg)
 {
     maps = 1;
     mines++;
-    ROS_WARN("Found Mine At %d'',%d''",global_x*2+1,global_y*2+1);
+    ROS_WARN("Found Mine At %d',%d'",global_x+goal_x+1,global_y+goal_y+1);
     ROS_WARN("%d Mines Found",mines);
     ROS_WARN("%d Mines Remaining",6-mines);
 
@@ -352,9 +352,9 @@ int main(int argc, char** argv)
 	    }
 
 	    flag2 = false;  
+            ros::spinOnce();
 	    global_x = goal_x;
 	    global_y = goal_y;
-            ros::spinOnce();
         }
     }
 
