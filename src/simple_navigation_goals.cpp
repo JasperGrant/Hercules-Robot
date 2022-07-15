@@ -136,21 +136,21 @@ int global_x = 0, global_y = 0;
 int return_x, return_y;
 
 // Old x & y
-int old_x, old_y;
+int new_x, new_y;
 
 // Callback when mines is found
 void grabber_callback(std_msgs::Empty msg)
 {
     maps = 1;
     mines++;
-    ROS_WARN("Found Mine At %d',%d'",global_x+old_x+1,global_y+old_y+1);
+    ROS_WARN("Found Mine At %d',%d'",global_x+new_x+1,global_y+new_y+1);
     ROS_WARN("%d Mines Found",mines);
     ROS_WARN("%d Mines Remaining",6-mines);
 
     //Half second delay may be enough?
     ros::Duration(2.5).sleep();
-    return_x = global_x;
-    return_y = global_y;
+    return_x = new_x;
+    return_y = new_y;
 }
 
 int main(int argc, char** argv)
@@ -330,7 +330,7 @@ int main(int argc, char** argv)
                     vel_msg.linear.x = 0;
                     vel_pub.publish(vel_msg);
 		
-                    flag2 = true;
+                    //flag2 = true;
 		    break;
 		case 'G':
 		    //Shortcut to goal
@@ -355,8 +355,8 @@ int main(int argc, char** argv)
 	    }
 
 	    flag2 = false;
-	    old_x = goal_x;
-            old_y = goal_y;
+	    new_x = goal_x;
+            new_y = goal_y;
             ros::spinOnce();
 	    global_x = goal_x;
 	    global_y = goal_y;
