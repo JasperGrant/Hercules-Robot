@@ -36,7 +36,7 @@ bool flag2 = false;
 //NEEEENEENN
 
 char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
-				"EEEENNNNNWWW", "E", "E", "S", "S", "N", "E",
+				"N", "E", "E", "S", "S", "N", "E",
                                	"", "E", "N", "M", "W", "W", "SEEESSSEE",
                                	"", "N", "N", "N", "W", "W", "S",
                                	"", "", "", "", "", "M", "W",
