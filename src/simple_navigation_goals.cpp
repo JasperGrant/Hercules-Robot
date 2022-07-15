@@ -45,14 +45,14 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
                                	"", "", "N", "N", "H", "H", "M",
                                       "", "E", "N", "N", "E", "E", "S",
                                       "", "E", "W", "N", "E", "E", "S",
-                                      "", "N", "O", "S", "S", "O", "O",
+                                      "e", "S", "S", "S", "S", "O", "O",
                                       "", "", "", "", "", "E", "O",
-                                      "", "", "O", "S", "S", "O", "O",
+                                      "O", "", "O", "S", "S", "O", "O",
                                       "", "", "R", "O", "O", "O", "O",
                                       "", "", "O", "O", "O", "h", "h",
-                             	"", "WwNF", "WwNNWWSSEF", "WwNNWWSSF", "WwGF", "EF", "EF",
-                             	"", "WwNF", "WwNNWSF", "NF", "WwGF", "EF", "EF",
-                             	"", "WwNF", "GF", "WwGF", "WwGF", "EF", "GF",
+                             	"", "WwNF", "WSSwNNNNWWSSEF", "WSSwNNNNWWSSF", "WSSwGF", "EF", "EF",
+                             	"", "WwNF", "WSSwNNNNWSF", "NF", "WSSwGF", "EF", "EF",
+                             	"", "WSSwGF", "WSSwGF", "WSSwGF", "WSSwGF", "EF", "GF",
                              	"", "", "", "", "", "NNF", "GF",
                              	"", "", "", "WGF", "WGF", "WGF", "GF",
                              	"", "", "", "WNF", "GF", "GF", "GF",
@@ -61,16 +61,16 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 // Offset MapsNNNWWH
 // X Offsets followed by Y offsets
 float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
-        0.0, 0.0, 0.10, 0.15, 0.10, 0.05, 0.05,
-        0.0, 0.0, 0.10, 0.0, 0.0, 0.0, 0.2,
+        0.0, 0.0, 0.10, 0.15, 0.10, 0.05, 0.08,
+        0.0, 0.0, 0.10, 0.0, 0.0, 0.0, -0.2,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1,
         0.0, 0.0, 0.0, -0.5, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.5, 0.1, 0.2, 0.1, 0.0,
         0.0, 0.0, 0.0, 0.1, 0.075, 0.175, 0.175,
         -0.3, -0.3, 0.0, 0.0, 0.1, 0.0, 0.0,
 
-        0.0, 0.0, -0.05 ,0.0, 0.0, 0.05, 0,
-        0.0, 0.0, -0.05, 0.0, 0.0, 0.0, 0.1,
+        0.0, 0.0, -0.05 ,0.0, 0.0, 0.05, -0.3,
+        0.0, 0.0, -0.05, 0.0, 0.0, 0.0, -0.3,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
@@ -330,7 +330,7 @@ int main(int argc, char** argv)
                     vel_msg.linear.x = 0;
                     vel_pub.publish(vel_msg);
 		
-                    //flag2 = true;
+                    flag2 = true;
 		    break;
 		case 'G':
 		    //Shortcut to goal
