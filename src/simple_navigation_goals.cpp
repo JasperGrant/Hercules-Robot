@@ -135,12 +135,15 @@ int global_x = 0, global_y = 0;
 // Return x & y
 int return_x, return_y;
 
+// Old x & y
+int old_x, old_y;
+
 // Callback when mines is found
 void grabber_callback(std_msgs::Empty msg)
 {
     maps = 1;
     mines++;
-    ROS_WARN("Found Mine At %d',%d'",global_x+goal_x+1,global_y+goal_y+1);
+    ROS_WARN("Found Mine At %d',%d'",global_x+old_x+1,global_y+old_y+1);
     ROS_WARN("%d Mines Found",mines);
     ROS_WARN("%d Mines Remaining",6-mines);
 
@@ -351,7 +354,9 @@ int main(int argc, char** argv)
                 gohere(goal_x, goal_y , ac);
 	    }
 
-	    flag2 = false;  
+	    flag2 = false;
+	    old_x = goal_x;
+            old_y = goal_y;
             ros::spinOnce();
 	    global_x = goal_x;
 	    global_y = goal_y;
