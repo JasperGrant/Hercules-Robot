@@ -36,7 +36,7 @@ bool flag2 = false;
 //NEEEENEENN
 
 char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
-				"N", "E", "E", "S", "S", "N", "E",
+				"EEEENNNNNWWW", "E", "E", "S", "S", "N", "E",
                                	"", "E", "N", "M", "W", "W", "SEEESSSEE",
                                	"", "N", "N", "N", "W", "W", "S",
                                	"", "", "", "", "", "M", "W",
@@ -62,7 +62,7 @@ char map[NUMBEROFMAPS][MAPSIZE][MAPSIZE][MAXSTRINGLEN] = {
 // X Offsets followed by Y offsets
 float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         0.0, 0.0, 0.10, 0.15, 0.10, 0.1, 0.1,
-        0.0, 0.0, 0.10, 0.0, 0.0, 0.0, -0.5,
+        0.0, 0.0, 0.10, 0.0, 0.0, 0.0, 0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1,
         0.0, 0.0, 0.0, -0.5, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.5, 0.1, 0.2, 0.1, 0.0,
@@ -70,7 +70,7 @@ float offsets[NUMBEROFOFFSETS][MAPSIZE][MAPSIZE] = {
         -0.3, -0.3, 0.0, 0.0, 0.1, 0.0, 0.0,
 
         0.0, 0.0, -0.05 ,0.0, 0.0, 0.1, -0.05,
-        0.0, 0.0, -0.05, 0.0, 0.0, 0.0, -0.5,
+        0.0, 0.0, -0.05, 0.0, 0.0, 0.0, -0.1,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
